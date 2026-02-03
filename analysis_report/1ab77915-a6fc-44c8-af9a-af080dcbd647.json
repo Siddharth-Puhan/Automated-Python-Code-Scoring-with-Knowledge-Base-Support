@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "analysis_id": "1ab77915-a6fc-44c8-af9a-af080dcbd647",
+    "timestamp": "2025-12-30T06:50:23.864855",
+    "category": "Graph",
+    "topic": "Shortest path (basic Dijkstra)"
+  },
+  "scores": {
+    "pylint_score": 9.41,
+    "complexity_score": 8.0,
+    "loc_score": 6.0,
+    "structural_score": 0.0,
+    "logic_score": 7.0,
+    "cyclomatic_score": 8.0,
+    "mi_score": 6.13,
+    "composite_score": 7.46
+  },
+  "raw_outputs": {
+    "pylint": "************* Module temp_code\ntemp_code.py:3:13: W0621: Redefining name 'graph' from outer scope (line 24) (redefined-outer-name)\n\n------------------------------------------------------------------\nYour code has been rated at 9.41/10 (previous run: 9.41/10, +0.00)",
+    "ast": [
+      "Variable `node` used before assignment (line 4).",
+      "Variable `start` used before assignment (line 5).",
+      "Variable `dijkstra` used before assignment (line 31).",
+      "Variable `start` used before assignment (line 6).",
+      "Variable `current_distance` used before assignment (line 11).",
+      "Variable `current_node` used before assignment (line 14).",
+      "Variable `heapq` used before assignment (line 9).",
+      "Variable `current_node` used before assignment (line 11).",
+      "Variable `current_distance` used before assignment (line 15).",
+      "Variable `weight` used before assignment (line 15).",
+      "Variable `neighbor` used before assignment (line 17).",
+      "Variable `neighbor` used before assignment (line 18).",
+      "Variable `heapq` used before assignment (line 19).",
+      "Variable `neighbor` used before assignment (line 19)."
+    ],
+    "math_llm": "No mathematical issues found or the model returned an empty response.",
+    "complexity_llm": "time_complexity: O((V+E)*log(V)), where V is the number of vertices and E is the number of edges in the graph. This is because each vertex is added to the priority queue once with a distance value (which takes logarithmic time), and for every edge, we extract the minimum from the heap which also takes O(log(V)) per iteration; since there are V iterations at most, this results in an overall complexity of O((V+E)*log(V)).\n\nspace_complexity: O(V) to store distances. The space needed is proportional to the number of vertices because each vertex needs its distance value stored and possibly a pointer/reference inside it if we consider adjacency lists, where as nodes are added or removed from heap; otherwise with defaultdict in Python graph storage this would be more complex O(V*E).\n\nexplanation: The Dijkstra's algorithm provided above runs through all vertices once (for each edge connected to a visited node), making the time complexity of extracting minimum and updating distances as described, which is thus dependent on both number of nodes and edges. As for space complexity it keeps track only necessary information per vertex so far seen during execution without needless retention of data between function calls or additional storage beyond what's needed to represent a graph (with adjacency lists) this simplifies its efficiency in terms of memory use, especially when compared with other algorithms that might retain more historical/global state.\n\nefficiency_score: 8"
+  },
+  "final_report": "\nCODE ANALYSIS REPORT\n-----------------------------------------------\nLINES OF CODE: 22\nFunctions: 1\nClasses: 0\n\nScore: 6.0/10\n\n---------- STRUCTURAL ERRORS (AST) ----------\nVariable `node` used before assignment (line 4).\nVariable `start` used before assignment (line 5).\nVariable `dijkstra` used before assignment (line 31).\nVariable `start` used before assignment (line 6).\nVariable `current_distance` used before assignment (line 11).\nVariable `current_node` used before assignment (line 14).\nVariable `heapq` used before assignment (line 9).\nVariable `current_node` used before assignment (line 11).\nVariable `current_distance` used before assignment (line 15).\nVariable `weight` used before assignment (line 15).\nVariable `neighbor` used before assignment (line 17).\nVariable `neighbor` used before assignment (line 18).\nVariable `heapq` used before assignment (line 19).\nVariable `neighbor` used before assignment (line 19).\n\nScore: 0.0/10\n\n---------- PYLINT ----------\n************* Module temp_code\ntemp_code.py:3:13: W0621: Redefining name 'graph' from outer scope (line 24) (redefined-outer-name)\n\n------------------------------------------------------------------\nYour code has been rated at 9.41/10 (previous run: 9.41/10, +0.00)\n\nScore: 9.41/10\n\n---------- CYCLOMATIC COMPLEXITY ----------\nGrade: B\nScore: 6.0\nRemarks: CC Range (6-10): Slight complexity.\n\n---------- MAINTAINABILITY INDEX ----------\nGrade: A\nScore: 61.28\nRemarks: MI Range (65-100): Highly maintainable \u2014 clean and simple\n\n---------- MATHEMATICAL / ALGORITHMIC ERRORS (LLM) ----------\nNo mathematical issues found or the model returned an empty response.\n\n---------- TIME/SPACE COMPLEXITY & READABILITY ----------\ntime_complexity: O((V+E)*log(V)), where V is the number of vertices and E is the number of edges in the graph. This is because each vertex is added to the priority queue once with a distance value (which takes logarithmic time), and for every edge, we extract the minimum from the heap which also takes O(log(V)) per iteration; since there are V iterations at most, this results in an overall complexity of O((V+E)*log(V)).\n\nspace_complexity: O(V) to store distances. The space needed is proportional to the number of vertices because each vertex needs its distance value stored and possibly a pointer/reference inside it if we consider adjacency lists, where as nodes are added or removed from heap; otherwise with defaultdict in Python graph storage this would be more complex O(V*E).\n\nexplanation: The Dijkstra's algorithm provided above runs through all vertices once (for each edge connected to a visited node), making the time complexity of extracting minimum and updating distances as described, which is thus dependent on both number of nodes and edges. As for space complexity it keeps track only necessary information per vertex so far seen during execution without needless retention of data between function calls or additional storage beyond what's needed to represent a graph (with adjacency lists) this simplifies its efficiency in terms of memory use, especially when compared with other algorithms that might retain more historical/global state.\n\nefficiency_score: 8\n\n---------- COMPOSITE SCORE FOR YOUR CODE ----------\n7.46\n\n--------------------------------------------\n"
+}

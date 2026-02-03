@@ -1,0 +1,85 @@
+{
+    "Basic Python": [
+        "Recursive Factorial",
+        "Iterative Factorial",
+        "Recursive Fibonacci",
+        "Iterative Fibonacci",
+        "Palindrome",
+        "Reverse String",
+        "Prime Number",
+        "Armstrong Number",
+        "GCD / LCM using recursion",
+        "Swap two numbers without a temp variable"
+    ],
+    "Dictionary Comprehension": [
+        "Character count in a string",
+        "Word count in a sentence",
+        "Map numbers to their squares",
+        "Filter the even key-value pairs",
+        "Swap keys and values",
+        "Word count in a string (using split())",
+        "Combine two lists into a dictionary",
+        "Convert list to dict of squares"
+    ],
+    "Graph": [
+        "Represent graph (Adjacency list/matrix)",
+        "Add vertex / edge",
+        "Depth First Search (DFS)",
+        "Breadth First Search (BFS)",
+        "Detect cycle (DFS-based)",
+        "Count connected components",
+        "Shortest path (basic Dijkstra)"
+    ],
+    "Linked List": [
+        "Create a Linked List",
+        "Insert a node",
+        "Delete a Node",
+        "Traverse / Display List",
+        "Reverse a Linked List",
+        "Detect Loop",
+        "Find Middle Node",
+        "Floyd’s Cycle Detection",
+        "Merge Two Sorted Linked Lists"
+    ],
+    "List Comprehension": [
+        "Squares of numbers",
+        "Even numbers filter",
+        "Convert all words to uppercase",
+        "Create all (x, y) pairs for two lists",
+        "Convert a list of lists into a flat list",
+        "Replace negative numbers with 0",
+        "Get all digits in a string"
+    ],
+    "Miscellaneous": [
+        "Addition/Sum of Numbers",
+        "Sum of Subset",
+        "Tower of Hanoi",
+        "Knapsack (Basic Version)"
+    ],
+    "Search Algorithms": [
+        "Linear / Sequential Search",
+        "Binary Search",
+        "Interpolation Search",
+        "Jump Search"
+    ],
+    "Sort Algorithms": [
+        "Bubble Sort",
+        "Merge Sort",
+        "Quick Sort",
+        "Selection Sort",
+        "Heap Sort",
+        "Insertion Sort",
+        "Count Sort"
+    ],
+    "Stack": [
+        "Implement stack (array or linked list based)",
+        "Push", 
+        "Pop", 
+        "Peek", 
+        "isEmpty",
+        "Check for balanced parentheses",
+        "Convert infix to postfix",
+        "Evaluate postfix expression",
+        "Next greater element"
+    ]
+}

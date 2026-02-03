@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "analysis_id": "1da57973-b99f-439b-820d-6d5d4936c97a",
+    "timestamp": "2026-02-03T15:24:59.204857",
+    "category": "Miscellaneous",
+    "topic": "Generates Fibonacci sequence iteratively"
+  },
+  "scores": {
+    "pylint_score": 10.0,
+    "complexity_score": 9.0,
+    "loc_score": 9.5,
+    "structural_score": 3.0,
+    "logic_score": 8.0,
+    "cyclomatic_score": 9.0,
+    "mi_score": 9.06,
+    "composite_score": 8.68
+  },
+  "raw_outputs": {
+    "pylint": "--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)",
+    "ast": [
+      "Variable `n` used before assignment (line 2).",
+      "Variable `fibonacci_sequence_iterative` used before assignment (line 16).",
+      "Variable `n` used before assignment (line 4).",
+      "Variable `n` used before assignment (line 9).",
+      "Variable `a` used before assignment (line 10).",
+      "Variable `b` used before assignment (line 10).",
+      "Variable `b` used before assignment (line 12)."
+    ],
+    "math_llm": "No mathematical issues found or the model returned an empty response.",
+    "complexity_llm": "time_complexity: O(n),\nspace_complexity: O(n),\nexplanation: The time complexity of the algorithm is determined by the loop that runs from the third term to the nth term (inclusive) and generates each Fibonacci number sequentially. Therefore, it has a linear relationship with 'n'. Similarly, since we are storing every generated Fibonacci number in an array which can contain up to 'n' elements at most for inputs of size 'n', the space complexity is also O(n).\nefficiency_score: 9"
+  },
+  "final_report": "\nCODE ANALYSIS REPORT\n-----------------------------------------------\nLINES OF CODE: 14\nFunctions: 1\nClasses: 0\n\nScore: 9.5/10\n\n---------- STRUCTURAL ERRORS (AST) ----------\nVariable `n` used before assignment (line 2).\nVariable `fibonacci_sequence_iterative` used before assignment (line 16).\nVariable `n` used before assignment (line 4).\nVariable `n` used before assignment (line 9).\nVariable `a` used before assignment (line 10).\nVariable `b` used before assignment (line 10).\nVariable `b` used before assignment (line 12).\n\nScore: 3.0/10\n\n---------- PYLINT ----------\n--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)\n\nScore: 10.0/10\n\n---------- CYCLOMATIC COMPLEXITY ----------\nGrade: A\nScore: 4.0\nRemarks: CC Range (1-5): Very simple and clear.\n\n---------- MAINTAINABILITY INDEX ----------\nGrade: A\nScore: 90.6\nRemarks: MI Range (65-100): Highly maintainable \u2014 clean and simple\n\n---------- MATHEMATICAL / ALGORITHMIC ERRORS (LLM) ----------\nNo mathematical issues found or the model returned an empty response.\n\n---------- TIME/SPACE COMPLEXITY & READABILITY ----------\ntime_complexity: O(n),\nspace_complexity: O(n),\nexplanation: The time complexity of the algorithm is determined by the loop that runs from the third term to the nth term (inclusive) and generates each Fibonacci number sequentially. Therefore, it has a linear relationship with 'n'. Similarly, since we are storing every generated Fibonacci number in an array which can contain up to 'n' elements at most for inputs of size 'n', the space complexity is also O(n).\nefficiency_score: 9\n\n---------- COMPOSITE SCORE FOR YOUR CODE ----------\n8.68\n\n--------------------------------------------\n"
+}

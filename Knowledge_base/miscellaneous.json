@@ -1,0 +1,72 @@
+[
+  {
+  "category": "Miscellaneous",
+  "topic": "Addition/Sum of Numbers",
+  "description": "Computes the sum of a variable number of numeric arguments.",
+  "optimal_code": {
+    "iterative": "def sum_numbers(*args):\n    total = 0\n    for num in args:\n        total += num\n    return total",
+    "recursive": "def sum_numbers_recursive(*args):\n    if not args:\n        return 0\n    return args[0] + sum_numbers_recursive(*args[1:])"
+  },
+  "complexity": {
+    "time": "O(n)",
+    "space": "O(1) for iteration / O(n) for recursion"
+  },
+  "metrics": {
+    "cyclomatic_complexity": 2,
+    "lines_of_code": 6
+  },
+  "tags": ["sum", "varargs", "numbers", "recursion", "iteration"]
+}
+,
+  {
+    "category": "Miscellaneous",
+    "topic": "Sum of Subset",
+    "description": "Finds all subsets of a given set that sum up to a target value using recursion (backtracking).",
+    "optimal_code": {
+      "recursive": "def subset_sum(arr, target, subset=[], index=0):\n    if sum(subset) == target:\n        print(subset)\n        return\n    if index >= len(arr) or sum(subset) > target:\n        return\n    subset_sum(arr, target, subset + [arr[index]], index + 1)\n    subset_sum(arr, target, subset, index + 1)"
+    },
+    "complexity": {
+      "time": "O(2^n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 4,
+      "lines_of_code": 7
+    },
+    "tags": ["recursion", "backtracking", "subset sum", "combinatorics"]
+  },
+  {
+    "category": "Miscellaneous",
+    "topic": "Tower of Hanoi",
+    "description": "Solves the Tower of Hanoi puzzle recursively by moving disks between three pegs following the rules of the game.",
+    "optimal_code": {
+      "recursive": "def tower_of_hanoi(n, source, target, auxiliary):\n    if n == 1:\n        print(f\"Move disk 1 from {source} to {target}\")\n        return\n    tower_of_hanoi(n - 1, source, auxiliary, target)\n    print(f\"Move disk {n} from {source} to {target}\")\n    tower_of_hanoi(n - 1, auxiliary, target, source)"
+    },
+    "complexity": {
+      "time": "O(2^n - 1)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 3,
+      "lines_of_code": 6
+    },
+    "tags": ["recursion", "tower of hanoi", "divide and conquer", "puzzle"]
+  },
+  {
+    "category": "Miscellaneous",
+    "topic": "Knapsack (Basic Version)",
+    "description": "Solves the 0/1 Knapsack problem recursively to find the maximum total value for a given weight capacity.",
+    "optimal_code": {
+      "recursive": "def knapsack(wt, val, W, n):\n    if n == 0 or W == 0:\n        return 0\n    if wt[n - 1] > W:\n        return knapsack(wt, val, W, n - 1)\n    else:\n        return max(val[n - 1] + knapsack(wt, val, W - wt[n - 1], n - 1), knapsack(wt, val, W, n - 1))"
+    },
+    "complexity": {
+      "time": "O(2^n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 4,
+      "lines_of_code": 6
+    },
+    "tags": ["recursion", "knapsack", "dynamic programming", "optimization"]
+  }
+]

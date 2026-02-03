@@ -1,0 +1,105 @@
+[
+  {
+    "category": "Stack",
+    "topic": "Implement stack (array or linked list based)",
+    "description": "Implements a stack data structure using either an array (list) or a linked list with basic operations.",
+    "optimal_code": {
+      "array_based": "stack = []  # Python list as stack",
+      "linked_list_based": "class Node:\n    def __init__(self, data):\n        self.data = data\n        self.next = None\n\nclass Stack:\n    def __init__(self):\n        self.top = None"
+    },
+    "complexity": {
+      "time": "O(1) for push, pop, and peek",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 10
+    },
+    "tags": ["stack", "data structure", "implementation"]
+  },
+  {
+    "category": "Stack",
+    "topic": "Push, Pop, Peek, isEmpty",
+    "description": "Implements standard stack operations to push and pop elements, check the top element, and verify if the stack is empty.",
+    "optimal_code": {
+      "array_based": "stack = []\nstack.append(x)  # Push\nstack.pop()       # Pop\ntop = stack[-1]   # Peek\nisempty = len(stack) == 0"
+    },
+    "complexity": {
+      "time": "O(1) per operation",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 4
+    },
+    "tags": ["stack", "push", "pop", "peek", "empty check"]
+  },
+  {
+    "category": "Stack",
+    "topic": "Check for balanced parentheses",
+    "description": "Uses a stack to verify whether all types of parentheses in a string are properly balanced.",
+    "optimal_code": {
+      "stack_method": "def is_balanced(expr):\n    stack = []\n    mapping = {')': '(', ']': '[', '}': '{'}\n    for ch in expr:\n        if ch in mapping.values():\n            stack.append(ch)\n        elif ch in mapping:\n            if not stack or stack.pop() != mapping[ch]:\n                return False\n    return not stack"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 3,
+      "lines_of_code": 8
+    },
+    "tags": ["stack", "parentheses", "validation", "string"]
+  },
+  {
+    "category": "Stack",
+    "topic": "Convert infix to postfix",
+    "description": "Converts an infix mathematical expression into a postfix (Reverse Polish) expression using a stack.",
+    "optimal_code": {
+      "algorithm": "def infix_to_postfix(expr):\n    precedence = {'+':1, '-':1, '*':2, '/':2, '^':3}\n    stack, output = [], ''\n    for ch in expr:\n        if ch.isalnum():\n            output += ch\n        elif ch == '(':\n            stack.append(ch)\n        elif ch == ')':\n            while stack and stack[-1] != '(':\n                output += stack.pop()\n            stack.pop()\n        else:\n            while stack and precedence.get(ch,0) <= precedence.get(stack[-1],0):\n                output += stack.pop()\n            stack.append(ch)\n    while stack:\n        output += stack.pop()\n    return output"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 4,
+      "lines_of_code": 12
+    },
+    "tags": ["stack", "expression conversion", "postfix", "algorithm"]
+  },
+  {
+    "category": "Stack",
+    "topic": "Evaluate postfix expression",
+    "description": "Evaluates a given postfix expression using a stack, handling basic arithmetic operators.",
+    "optimal_code": {
+      "algorithm": "def eval_postfix(expr):\n    stack = []\n    for ch in expr:\n        if ch.isdigit():\n            stack.append(int(ch))\n        else:\n            b, a = stack.pop(), stack.pop()\n            if ch == '+': stack.append(a + b)\n            elif ch == '-': stack.append(a - b)\n            elif ch == '*': stack.append(a * b)\n            elif ch == '/': stack.append(a / b)\n    return stack.pop()"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 4,
+      "lines_of_code": 11
+    },
+    "tags": ["stack", "postfix", "evaluation", "arithmetic"]
+  },
+  {
+    "category": "Stack",
+    "topic": "Next greater element",
+    "description": "Finds the next greater element for each element in an array using a stack-based approach.",
+    "optimal_code": {
+      "stack_method": "def next_greater(nums):\n    res, stack = [-1]*len(nums), []\n    for i in range(len(nums)-1, -1, -1):\n        while stack and stack[-1] <= nums[i]:\n            stack.pop()\n        if stack:\n            res[i] = stack[-1]\n        stack.append(nums[i])\n    return res"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 3,
+      "lines_of_code": 8
+    },
+    "tags": ["stack", "array", "next greater element", "optimization"]
+  }
+]

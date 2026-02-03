@@ -1,0 +1,790 @@
+#!/usr/bin/env python3
+"""
+generate_truth_tables.py
+
+Reads basic_python.json (your KB), analyzes each optimal_code snippet,
+and writes basic_python_truth_table.json (auto-filled truth table).
+"""
+
+import os
+import json
+import re
+import subprocess
+import ast
+import tempfile
+import requests
+from typing import Dict, Any
+
+INPUT_FILE = "basic_python.json"
+OUTPUT_FILE = "basic_python_truth_table.json"
+OLLAMA_URL = "http://localhost:11434/api/generate"
+
+# Utilities
+def run_pylint_on_code(code: str) -> float:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
+        f.write(code)
+        fname = f.name
+    try:
+        res = subprocess.run(["pylint", fname, "--disable=R,C"], capture_output=True, text=True, timeout=30)
+        out = res.stdout + res.stderr
+        m = re.search(r"rated at\s*([0-9]+\.[0-9]+)/10", out)
+        if m:
+            return float(m.group(1))
+    except Exception as e:
+        print("pylint error:", e)
+    finally:
+        try:
+            os.remove(fname)
+        except:
+            pass
+    return 0.0
+
+def run_radon_cc_and_mi(code: str):
+    # run radon cc and mi on a temp file
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
+        f.write(code)
+        fname = f.name
+    try:
+        cc_proc = subprocess.run(["radon", "cc", fname, "-s", "-a"], capture_output=True, text=True, timeout=20)
+        mi_proc = subprocess.run(["radon", "mi", fname, "-s"], capture_output=True, text=True, timeout=20)
+        cc_out = cc_proc.stdout
+        mi_out = mi_proc.stdout
+        # parse cyclomatic average (radon prints something like "Average complexity: A (3.00)")
+        cc_match = re.search(r"-\s*([A-F])\s*\(([\d\.]+)\)", cc_out)
+        cc_score_raw = None
+        if cc_match:
+            cc_score_raw = float(cc_match.group(2))
+        # parse MI score (radon prints lines like "Average MI: 64.1")
+        mi_match = re.search(r"(\d+\.\d+)", mi_out)
+        mi_score_raw = None
+        if mi_match:
+            mi_score_raw = float(mi_match.group(1))
+        return cc_score_raw, mi_score_raw, cc_out, mi_out
+    except Exception as e:
+        print("radon error:", e)
+        return None, None, "", ""
+
+def call_ollama_scoring(model: str, prompt: str, timeout=30):
+    payload = {"model": model, "prompt": prompt}
+    try:
+        resp = requests.post(OLLAMA_URL, json=payload, timeout=timeout)
+        return resp.text
+    except Exception as e:
+        print("ollama call error:", e)
+        return ""
+
+def extract_efficiency_score_from_text(text: str) -> float:
+    m = re.search(r"efficiency_score:\s*([0-9]+)", text)
+    if m:
+        return float(m.group(1))
+    # fallback try any integer
+    m2 = re.search(r"(\d+)", text)
+    if m2:
+        return float(m2.group(1))
+    return 0.0
+
+def extract_logic_score_from_text(text: str) -> float:
+    m = re.search(r"logic_score:\s*(\d+)", text)
+    if m:
+        return float(m.group(1))
+    # fallback heuristics
+    if "No mistakes" in text or "No errors" in text:
+        return 10.0
+    return 0.0
+
+def map_cc_to_score(cc_value: float) -> float:
+    cc = float(cc_value)
+    if 1 <= cc <= 3:
+        return 10.0
+    elif 4 <= cc <= 5:
+        return 9.0
+    elif 6 <= cc <= 8:
+        return 8.0
+    elif 9 <= cc <= 10:
+        return 7.0
+    elif 11 <= cc <= 15:
+        return 6.0
+    elif 16 <= cc <= 20:
+        return 5.0
+    elif 21 <= cc <= 30:
+        return 4.0
+    else:
+        return 3.0
+
+def compute_composite_score(pylint_score, complexity_score, loc_score, structural_score, logic_score, cyclomatic_score, mi_score):
+    try:
+        composite = (
+            float(pylint_score)*0.25 +
+            float(complexity_score)*0.25 +
+            float(loc_score)*0.05 +
+            float(structural_score)*0.05 +
+            float(logic_score)*0.30 +
+            float(cyclomatic_score)*0.05 +
+            (float(mi_score)/10.0)*0.05
+        )
+        return round(composite, 2)
+    except Exception as e:
+        print("composite calc error", e)
+        return 0.0
+
+def count_loc(code: str):
+    loc = 0
+    for line in code.splitlines():
+        s = line.strip()
+        if s and not s.startswith("#"):
+            loc += 1
+    return loc
+
+# Read input KB
+with open(INPUT_FILE, "r") as f:
+    kb = json.load(f)
+
+truth_entries = []
+
+for item in kb:
+    topic = item.get("topic")
+    optimal = item.get("optimal_code", {})
+    # For each variant inside optimal_code (e.g., "recursive", "iterative", "arithmetic", "bitwise")
+    for variant_name, code_str in optimal.items():
+        # Basic static metrics
+        loc = count_loc(code_str)
+        pylint_sc = run_pylint_on_code(code_str)
+        cc_raw, mi_raw, cc_out, mi_out = run_radon_cc_and_mi(code_str)
+        # LLM complexity prompt (phi3)
+        complexity_prompt = f\"\"\"You are an expert in algorithm analysis.
+Analyze the code and return ONLY:
+time_complexity: "<big-o>"
+space_complexity: "<big-o>"
+efficiency_score: 0-10
+
+CODE:
+{code_str}
+\"\"\"
+        phi_resp = call_ollama_scoring("phi3", complexity_prompt)
+        efficiency_score = extract_efficiency_score_from_text(phi_resp)
+        # LLM logic check (deepseek)
+        math_prompt = f\"\"\"You are an expert Python tutor and algorithm analyst.
+Identify ONLY mathematical or algorithmic mistakes. Do NOT include chain of thought.
+CODE:
+{code_str}
+\"\"\"
+        deepseek_resp = call_ollama_scoring("deepseek-r1:1.5b", math_prompt)
+        logic_score = extract_logic_score_from_text(deepseek_resp)
+        # Fallbacks if radon failed
+        if cc_raw is None:
+            # use LOC heuristics to estimate CC
+            cc_raw = 1 + max(0, loc//5)
+        if mi_raw is None:
+            mi_raw = 50 + (loc % 50)
+        cyclomatic_score = map_cc_to_score(cc_raw)
+        # Structural score (simple heuristic)
+        structural_score = 10.0 if "def " in code_str and loc >= 3 else 6.0
+        # Normalize loc_score to 0-10 using simple heuristics (assume Basic Python ideal 5-30 lines)
+        if loc <= 0:
+            loc_score = 0.0
+        elif 5 <= loc <= 30:
+            loc_score = 10.0
+        elif loc < 5:
+            loc_score = max(0, 10 - (5 - loc)*1.0)
+        else:
+            loc_score = max(0, 10 - (loc - 30)*0.2)
+        composite_sc = compute_composite_score(
+            pylint_score=pylint_sc,
+            complexity_score=efficiency_score,
+            loc_score=loc_score,
+            structural_score=structural_score,
+            logic_score=logic_score,
+            cyclomatic_score=cyclomatic_score,
+            mi_score=mi_raw
+        )
+        entry = {
+            "category": item.get("category"),
+            "topic": topic,
+            "variant": variant_name,
+            "description": item.get("description"),
+            "metrics": {
+                "pylint_score": round(pylint_sc, 2),
+                "complexity_score": round(efficiency_score, 2),
+                "loc_score": round(loc_score, 2),
+                "structural_score": round(structural_score, 2),
+                "logic_score": round(logic_score, 2),
+                "math_score": round(logic_score, 2),
+                "cyclomatic_complexity": cc_raw,
+                "cyclomatic_score": round(cyclomatic_score, 2),
+                "maintainability_index": round(mi_raw, 2),
+                "composite_score": composite_sc
+            },
+            "complexity": {
+                "time": item.get("complexity", {}).get("time"),
+                "space": item.get("complexity", {}).get("space")
+            },
+            "truth_table": []  # keep empty: you can populate manually or extend script to auto-generate tests
+        }
+        truth_entries.append(entry)
+
+# Write output
+with open(OUTPUT_FILE, "w") as f:
+    json.dump(truth_entries, f, indent=2)
+
+print(f"Wrote {len(truth_entries)} entries to {OUTPUT_FILE}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from flask import Flask, request, render_template
+import requests, subprocess, os, re, ast, json, spacy
+from os import abort
+
+nlp = spacy.load("en_core_web_md")
+
+app = Flask(__name__)
+
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+KB_DIR = os.path.join(os.path.dirname(__file__), "Knowledge_base")
+
+# check if a valid python code has been submitted
+def is_valid_python(code):
+    try:
+        ast.parse(code)
+        return True
+    except SyntaxError:
+        return False
+
+
+# AST based structural analysis. Checks for:
+# unreachable code
+# undefined variables
+# missing returns
+# empty loops
+# syntax errors
+def ast_structural_analysis(code):
+    issues = []
+
+    try:
+        tree = ast.parse(code)
+    except Exception as e:
+        return [f"AST could not parse code: {e}"]
+
+    assigned = set()
+
+    def check_unreachable(body):
+        unreachable = []
+        hit_terminal = False
+        for node in body:
+            if hit_terminal:
+                unreachable.append(f"Unreachable code at line {node.lineno}.")
+            if isinstance(node, (ast.Return, ast.Raise, ast.Break, ast.Continue)):
+                hit_terminal = True
+        return unreachable
+
+    for node in ast.walk(tree):
+
+        # Track assigned variables
+        if isinstance(node, ast.Assign):
+            for t in node.targets:
+                if isinstance(t, ast.Name):
+                    assigned.add(t.id)
+
+        # Variable used before assignment
+        if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load):
+            if node.id not in assigned and node.id not in dir(__builtins__):
+                issues.append(
+                    f"Variable `{node.id}` used before assignment (line {node.lineno})."
+                )
+
+        # Empty loop detection
+        if isinstance(node, (ast.For, ast.While)):
+            if not node.body:
+                issues.append(f"Empty loop at line {node.lineno} — does nothing.")
+
+        # Missing return
+        if isinstance(node, ast.FunctionDef):
+            returns = [n for n in ast.walk(node) if isinstance(n, ast.Return)]
+            if not returns:
+                issues.append(
+                    f"Function `{node.name}` has no return statement (line {node.lineno})."
+                )
+
+        # Unreachable code
+        if hasattr(node, "body") and isinstance(node.body, list):
+            issues.extend(check_unreachable(node.body))
+
+    if not issues:
+        return ["No structural issues detected by AST."]
+
+    return issues
+
+
+# Homepage
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+
+# Code explanation using LLM 
+@app.route('/explain', methods=['POST'])
+def explain_code():
+    user_code = request.form.get('code', '').strip()
+    uploaded_file = request.files.get('file')
+
+    # If file uploaded
+    if uploaded_file and uploaded_file.filename:
+        if not uploaded_file.filename.endswith(".py"):
+            return render_template("index.html",
+                                   explanation="Please upload a valid .py file.",
+                                   valid_code=False)
+
+        path = os.path.join(UPLOAD_FOLDER, uploaded_file.filename)
+        uploaded_file.save(path)
+        with open(path, "r") as f:
+            user_code = f.read().strip()
+        os.remove(path)
+
+    if not user_code:
+        return render_template("index.html",
+                               explanation="Please paste or upload Python code.",
+                               valid_code=False)
+
+    # Syntax check
+    if not is_valid_python(user_code):
+        return render_template(
+            "index.html",
+            explanation="This is NOT valid Python syntax.",
+            code=user_code,
+            valid_code=False
+        )
+
+    # LLM Explanation Prompt
+    payload = {
+        "model": "mistral",
+        "prompt": f"""
+You are a strict Python reviewer.
+Find logical issues and explain EXACTLY what the code does.
+
+1. Give a topic to the code that is no longer than 6 words and captures exactly what the code does. 
+2. Explain in brief exactly what the code does.
+3. List ALL logical errors.
+4. Show corrected versions, if any.
+5. Simulate execution for common inputs.
+
+CODE:
+{user_code}
+"""
+    }
+
+    explanation = ""
+
+    try:
+        response = requests.post("http://localhost:11434/api/generate",
+                                 json=payload, stream=True)
+    except:
+        return render_template("index.html",
+                               explanation="Ollama is not running.",
+                               valid_code=False)
+
+    for raw in response.iter_lines():
+        if not raw:
+            continue
+
+        line = raw.decode().strip()
+        if line.startswith("{"):
+            try:
+                data = json.loads(line)
+                explanation += data.get("response", "")
+            except:
+                pass
+
+    explanation = explanation.replace("\\n", "\n").replace('\\"', '"').strip()
+
+    # getting the topic name from the explanation
+    def extract_topic(explanation):
+        match = re.search(r"Topic:\s*(.+)", explanation)
+        if match:
+            return match.group(1).strip()
+        return None
+    
+    extracted_topic = extract_topic(explanation)
+    
+    # LLM tag generation - mainly used to search the KB for the optimal solution
+    # kb_index.json contains the categories and the topics within those categories
+    with open("kb_index.json") as f:
+        KB = json.load(f)
+
+
+    SIM_THRESHOLD = 0.70
+
+    def match_topic_to_kb(topic_name, KB):
+        topic_doc = nlp(topic_name)
+        best_score = 0
+        best_topic = None
+        best_category = None
+
+        for category, topic_list in KB.items():
+            for t in topic_list:
+                score = topic_doc.similarity(nlp(t))
+                if score > best_score:
+                    best_score = score
+                    best_topic = t
+                    best_category = category
+
+        # If similar enough → matched
+        if best_score >= SIM_THRESHOLD:
+            return best_category, best_topic
+        
+        # Else → miscellaneous
+        return "Miscellaneous", topic_name
+
+    category, matched_topic = match_topic_to_kb(extracted_topic, KB)
+
+    return render_template("index.html",
+                           code=user_code,
+                           explanation=explanation,
+                           category=category,
+                           topic=matched_topic,
+                           valid_code=True)
+
+
+
+@app.route('/analyze', methods=['POST'])
+def analyze_code():
+    user_code = request.form.get('code', '').strip()
+
+    if not user_code:
+        return render_template("index.html",
+                               analysis="No code provided.",
+                               valid_code=False)
+
+    with open("temp_code.py", "w") as f:
+        f.write(user_code)
+
+    pylint_result = subprocess.run(
+        ["pylint", "temp_code.py", "--disable=R,C"],
+        capture_output=True, text=True
+    ).stdout
+
+
+    cc_grades = {
+        'A': "CC Range (1-5): Very simple and clear.",
+        'B': "CC Range (6-10): Slight complexity.",
+        'C': "CC Range (11-20): Moderate complexity.",
+        'D': "CC Range (21-30): High complexity.",
+        'E': "CC Range (31-40): Very high complexity.",
+        'F': "CC Range (>40): Unmaintainable."
+    }
+
+    radon_cc = subprocess.run(
+        ["radon", "cc", "temp_code.py", "-s", "-a"],
+        capture_output=True, text=True
+    ).stdout
+    match = re.search(r"-\s+([A-F])\s*\(([\d.]+)\)", radon_cc)
+    if match:
+        cc_grade = match.group(1)
+        cc_score = float(match.group(2))
+        cc_remarks = cc_grades.get(cc_grade, "")
+    else:
+        cc_grade = "N/A"
+        cc_score = 0
+        cc_remarks = "Cyclomatic complexity could not be computed."
+
+    # Maintainability Index
+    mi_grades = {'A':"MI Range (65-100): Highly maintainable — clean and simple", 
+                 'B':"MI Range (35-64): Moderate — acceptable but could be improved", 
+                 'C':"MI Range (0-34): Hard to maintain — needs refactoring"} 
+    
+    radon_mi = subprocess.run(
+        ["radon", "mi", "temp_code.py", "-s"],
+        capture_output=True, text=True
+    ).stdout
+    match = re.search(r"-\s+([A-F])\s*\(([\d.]+)\)", radon_mi)
+    if match:
+        mi_grade = match.group(1)
+        mi_score = float(match.group(2))
+        mi_remarks = "" 
+        if mi_grade in mi_grades.keys(): 
+            mi_remarks = mi_grades[mi_grade]
+    else:
+        mi_grade = "N/A"
+        mi_score = 0
+        mi_remarks = "Maintainability Index could not be computed."
+
+    structural_issues = ast_structural_analysis(user_code)
+    structural_output = "\n".join(structural_issues)
+
+    math_prompt = f"""
+You are an expert Python tutor and algorithm analyst.
+
+Identify ONLY mathematical or algorithmic mistakes such as:
+- wrong initialization (e.g., factorial = 0)
+- incorrect loop logic
+- incorrect base cases
+- wrong return values
+- math errors producing wrong output
+
+Then simulate execution for sample inputs.
+
+Give clean, concise output. Do NOT include chain-of-thought.
+
+CODE:
+{user_code}
+"""
+
+    math_payload = {"model": "deepseek-r1:8b", "prompt": math_prompt}
+    math_feedback_raw = ""
+    math_feedback = ""
+    try:
+        resp = requests.post("http://localhost:11434/api/generate", json=math_payload, timeout=30)
+        
+        for raw in resp.iter_lines():
+            if not raw:
+                continue
+            line = raw.decode().strip()
+            try:
+                data = json.loads(line)
+                if "response" in data and data["response"].strip():
+                    math_feedback_raw += data["response"]
+
+                if "thinking" in data:
+                    pass
+            except json.JSONDecodeError:
+                continue
+
+        math_feedback = math_feedback_raw.replace("\\n", "\n").replace('\\"', '"').strip()
+
+        if not math_feedback:
+            math_feedback = "No mathematical issues found or the model returned an empty response."
+
+
+    except Exception as e:
+        math_feedback = f"Mathematical analysis LLM unavailable: {e}"
+
+    # ---------- Complexity & Readability LLM ----------
+    complexity_prompt = f"""
+Analyze this Python code and give:
+1. Time complexity
+2. Space complexity
+{user_code}
+"""
+
+    llm_payload = {"model": "phi3", 
+                   "prompt": complexity_prompt}
+    llm_feedback = ""
+
+    try:
+        cplx_response = requests.post("http://localhost:11434/api/generate",
+                                      json=llm_payload, stream=True)
+        for raw in cplx_response.iter_lines():
+            if not raw:
+                continue
+            line = raw.decode().strip()
+            if line.startswith("{"):
+                try:
+                    data = json.loads(line)
+                    llm_feedback += data.get("response", "")
+                except:
+                    pass
+
+    except:
+        llm_feedback = "Complexity LLM unavailable."
+
+    loc = len(user_code.splitlines())
+    func_count = user_code.count("def ")
+    class_count = user_code.count("class ")
+    
+
+    # ---------- Final Report ----------
+    combined = f"""
+CODE ANALYSIS REPORT
+-----------------------------------------------
+LINES OF CODE: {loc}
+Functions: {func_count}
+Classes: {class_count}
+
+---------- STRUCTURAL ERRORS (AST) ----------
+{structural_output}
+
+---------- PYLINT ----------
+{pylint_result.strip()}
+
+---------- CYCLOMATIC COMPLEXITY ----------
+Grade: {cc_grade}
+Score: {cc_score}
+Remarks: {cc_remarks}
+
+---------- MAINTAINABILITY INDEX ----------
+Grade: {mi_grade}
+Score: {mi_score}
+Remarks: {mi_remarks}
+
+---------- MATHEMATICAL / ALGORITHMIC ERRORS (LLM) ----------
+{math_feedback}
+
+---------- TIME/SPACE COMPLEXITY & READABILITY ----------
+{llm_feedback}
+
+--------------------------------------------
+"""
+
+    os.remove("temp_code.py")
+
+    return render_template("index.html",
+                           code=user_code,
+                           analysis=combined,
+                           valid_code=True)
+
+
+# displaying the contents of KB
+# make the page URLs more readable
+def slugify(text):
+    text = text.lower()
+    text = re.sub(r"[^\w\s-]", "", text)
+    text = re.sub(r"[\s_]+", "-", text)
+    return text.strip("-")
+
+# pretty name from filename
+def pretty_category_name(filename):
+    name = os.path.splitext(filename)[0]
+    return name.replace("_", " ").title()
+
+# List available category files
+def list_category_files():
+    files = []
+    try:
+        for fname in sorted(os.listdir(KB_DIR)):
+            if fname.endswith(".json"):
+                files.append(fname)
+    except FileNotFoundError:
+        return []
+    return files
+
+# Load full JSON array from a category file, return list of dict entries
+def load_category_entries(category_slug):
+    filename = f"{category_slug}.json"
+    path = os.path.join(KB_DIR, filename)
+    if not os.path.exists(path):
+        return None
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    # data is expected to be a list of objects
+    return data
+
+# Find entry by topic slug
+def find_entry_by_topic(entries, topic_slug):
+    for entry in entries:
+        topic = entry.get("topic", "")
+        if slugify(topic) == topic_slug:
+            return entry
+    return None
+
+@app.route("/kb")
+def kb_index():
+    files = list_category_files()
+    categories = [
+        {
+            "slug": os.path.splitext(fname)[0],
+            "pretty": pretty_category_name(fname)
+        } for fname in files
+    ]
+    return render_template("kb.html", categories=categories)
+
+@app.route("/kb/<category_slug>")
+def kb_category(category_slug):
+    entries = load_category_entries(category_slug)
+    if entries is None:
+        abort(404)
+
+    # extract topics and topic slugs
+    topics = []
+    for e in entries:
+        topic = e.get("topic", "")
+        topics.append({
+            "topic": topic,
+            "slug": slugify(topic)
+        })
+
+    # optional search q param (search by topic name)
+    q = request.args.get("q", "").strip().lower()
+    if q:
+        topics = [t for t in topics if q in t["topic"].lower()]
+
+    category_pretty = pretty_category_name(category_slug + ".json")
+    return render_template("kb_topics.html", category_slug=category_slug,
+                           category_pretty=category_pretty, topics=topics, q=q)
+
+@app.route("/kb/<category_slug>/<topic_slug>")
+def kb_detail(category_slug, topic_slug):
+    entries = load_category_entries(category_slug)
+    if entries is None:
+        abort(404)
+    entry = find_entry_by_topic(entries, topic_slug)
+    if entry is None:
+        abort(404)
+
+    # Provide safe defaults
+    description = entry.get("description", "")
+    optimal_code = entry.get("optimal_code", {})
+    complexity = entry.get("complexity", {})
+    metrics = entry.get("metrics", {})
+    tags = entry.get("tags", [])
+
+    return render_template("kb_detail.html",
+                           category_slug=category_slug,
+                           category_pretty=pretty_category_name(category_slug + ".json"),
+                           entry=entry,
+                           description=description,
+                           optimal_code=optimal_code,
+                           complexity=complexity,
+                           metrics=metrics,
+                           tags=tags,
+                           topic_slug=topic_slug)
+
+# Optional: root redirect to /kb
+@app.route("/")
+def root():
+    return """<script>location='/kb'</script>"""
+
+
+if __name__ == '__main__':
+    app.run(debug=True, use_reloader=False)

@@ -1,0 +1,138 @@
+[
+  {
+    "category": "Dictionary Comprehension",
+    "topic": "Character count in a string",
+    "description": "Counts the frequency of each character in a string using dictionary comprehension.",
+    "optimal_code": {
+      "dict_comprehension": "char_count = {ch: s.count(ch) for ch in set(s)}"
+    },
+    "complexity": {
+      "time": "O(n^2) for count method / O(n) using collections.Counter",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 1
+    },
+    "tags": ["dictionary comprehension", "string", "frequency"]
+  },
+  {
+    "category": "Dictionary Comprehension",
+    "topic": "Word count in a sentence",
+    "description": "Counts the frequency of each word in a sentence using dictionary comprehension.",
+    "optimal_code": {
+      "dict_comprehension": "word_count = {word: sentence.split().count(word) for word in set(sentence.split())}"
+    },
+    "complexity": {
+      "time": "O(n^2) / O(n) using collections.Counter",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 1
+    },
+    "tags": ["dictionary comprehension", "string", "word count"]
+  },
+  {
+    "category": "Dictionary Comprehension",
+    "topic": "Map numbers to their squares",
+    "description": "Creates a dictionary mapping numbers to their squares using dictionary comprehension.",
+    "optimal_code": {
+      "dict_comprehension": "squares_dict = {x: x**2 for x in numbers}"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 1
+    },
+    "tags": ["dictionary comprehension", "numbers", "squares"]
+  },
+  {
+    "category": "Dictionary Comprehension",
+    "topic": "Filter the even key-value pairs",
+    "description": "Filters a dictionary to keep only the items with even values using dictionary comprehension.",
+    "optimal_code": {
+      "dict_comprehension": "even_dict = {k: v for k, v in original_dict.items() if v % 2 == 0}"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 2,
+      "lines_of_code": 1
+    },
+    "tags": ["dictionary comprehension", "filter", "even values"]
+  },
+  {
+    "category": "Dictionary Comprehension",
+    "topic": "Swap keys and values",
+    "description": "Creates a new dictionary by swapping keys and values of the original dictionary.",
+    "optimal_code": {
+      "dict_comprehension": "swapped_dict = {v: k for k, v in original_dict.items()}"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 1
+    },
+    "tags": ["dictionary comprehension", "swap", "keys and values"]
+  },
+  {
+    "category": "Dictionary Comprehension",
+    "topic": "Word count in a string (using split())",
+    "description": "Counts the occurrences of each word in a string using split() and dictionary comprehension.",
+    "optimal_code": {
+      "dict_comprehension": "word_count = {word: s.split().count(word) for word in set(s.split())}"
+    },
+    "complexity": {
+      "time": "O(n^2)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 1
+    },
+    "tags": ["dictionary comprehension", "string", "word count"]
+  },
+  {
+    "category": "Dictionary Comprehension",
+    "topic": "Combine two lists into a dictionary",
+    "description": "Combines two lists into a dictionary using dictionary comprehension.",
+    "optimal_code": {
+      "dict_comprehension": "combined_dict = {keys[i]: values[i] for i in range(len(keys))}"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 1
+    },
+    "tags": ["dictionary comprehension", "combine", "lists"]
+  },
+  {
+    "category": "Dictionary Comprehension",
+    "topic": "Convert list to dict of squares",
+    "description": "Creates a dictionary where each element of the list is mapped to its square using dictionary comprehension.",
+    "optimal_code": {
+      "dict_comprehension": "squares_dict = {x: x**2 for x in numbers}"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 1
+    },
+    "tags": ["dictionary comprehension", "numbers", "squares"]
+  }
+]

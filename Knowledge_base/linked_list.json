@@ -1,0 +1,138 @@
+[
+  {
+    "category": "Linked List",
+    "topic": "Create a Linked List",
+    "description": "Defines a Node class to represent each element and a LinkedList class to manage the head node.",
+    "optimal_code": {
+      "class_based": "class Node:\n    def __init__(self, data):\n        self.data = data\n        self.next = None\n\nclass LinkedList:\n    def __init__(self):\n        self.head = None"
+    },
+    "complexity": {
+      "time": "O(1)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 6
+    },
+    "tags": ["linked list", "data structure", "node", "class"]
+  },
+  {
+    "category": "Linked List",
+    "topic": "Insert a node",
+    "description": "Inserts a new node at the start, end, or a specific position in the linked list.",
+    "optimal_code": {
+      "class_based": "def insert_beginning(self, data):\n    new_node = Node(data)\n    new_node.next = self.head\n    self.head = new_node\n\n\ndef insert_end(self, data):\n    new_node = Node(data)\n    if not self.head:\n        self.head = new_node\n        return\n    temp = self.head\n    while temp.next:\n        temp = temp.next\n    temp.next = new_node\n\n\ndef insert_at_position(self, data, pos):\n    new_node = Node(data)\n    if pos == 0:\n        self.insert_beginning(data)\n        return\n    temp = self.head\n    for _ in range(pos - 1):\n        if not temp:\n            return\n        temp = temp.next\n    new_node.next = temp.next\n    temp.next = new_node"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 5,
+      "lines_of_code": 18
+    },
+    "tags": ["linked list", "insert", "data structure"]
+  },
+  {
+    "category": "Linked List",
+    "topic": "Delete a Node",
+    "description": "Deletes a node with a specific value from the linked list.",
+    "optimal_code": {
+      "class_based": "def delete_node(self, key):\n    temp = self.head\n    if temp and temp.data == key:\n        self.head = temp.next\n        return\n    prev = None\n    while temp and temp.data != key:\n        prev = temp\n        temp = temp.next\n    if not temp:\n        return\n    prev.next = temp.next"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 4,
+      "lines_of_code": 9
+    },
+    "tags": ["linked list", "delete", "node", "data structure"]
+  },
+  {
+    "category": "Linked List",
+    "topic": "Traverse / Display List",
+    "description": "Traverses through all nodes in the linked list and prints their values.",
+    "optimal_code": {
+      "class_based": "def traverse(self):\n    temp = self.head\n    while temp:\n        print(temp.data, end=' -> ')\n        temp = temp.next\n    print('None')"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 2,
+      "lines_of_code": 5
+    },
+    "tags": ["linked list", "traverse", "display", "iteration"]
+  },
+  {
+    "category": "Linked List",
+    "topic": "Reverse a Linked List",
+    "description": "Reverses a linked list by iteratively changing the next pointers of nodes.",
+    "optimal_code": {
+      "iterative": "def reverse(self):\n    prev = None\n    current = self.head\n    while current:\n        next_node = current.next\n        current.next = prev\n        prev = current\n        current = next_node\n    self.head = prev"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 3,
+      "lines_of_code": 7
+    },
+    "tags": ["linked list", "reverse", "iteration", "data structure"]
+  },
+  {
+    "category": "Linked List",
+    "topic": "Detect Loop",
+    "description": "Detects whether a linked list contains a cycle using Floyd’s cycle detection algorithm.",
+    "optimal_code": {
+      "floyd_algorithm": "def detect_loop(self):\n    slow = fast = self.head\n    while slow and fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n        if slow == fast:\n            return True\n    return False"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 4,
+      "lines_of_code": 7
+    },
+    "tags": ["linked list", "loop detection", "floyd", "cycle detection"]
+  },
+  {
+    "category": "Linked List",
+    "topic": "Find Middle Node (Floyd’s Cycle Detection)",
+    "description": "Finds the middle node of a linked list using the slow and fast pointer approach.",
+    "optimal_code": {
+      "two_pointer": "def find_middle(self):\n    slow = fast = self.head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n    return slow.data"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 3,
+      "lines_of_code": 6
+    },
+    "tags": ["linked list", "middle element", "floyd", "two pointer"]
+  },
+  {
+    "category": "Linked List",
+    "topic": "Merge Two Sorted Linked Lists",
+    "description": "Merges two sorted linked lists into one sorted list using recursion.",
+    "optimal_code": {
+      "recursive": "def merge_sorted_lists(l1, l2):\n    if not l1:\n        return l2\n    if not l2:\n        return l1\n    if l1.data < l2.data:\n        l1.next = merge_sorted_lists(l1.next, l2)\n        return l1\n    else:\n        l2.next = merge_sorted_lists(l1, l2.next)\n        return l2"
+    },
+    "complexity": {
+      "time": "O(n + m)",
+      "space": "O(n + m) for recursion"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 4,
+      "lines_of_code": 9
+    },
+    "tags": ["linked list", "merge", "recursion", "sorting"]
+  }
+]

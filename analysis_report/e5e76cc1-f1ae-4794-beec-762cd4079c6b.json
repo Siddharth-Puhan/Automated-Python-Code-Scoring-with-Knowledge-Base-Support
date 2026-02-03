@@ -1,0 +1,67 @@
+{
+  "meta": {
+    "analysis_id": "e5e76cc1-f1ae-4794-beec-762cd4079c6b",
+    "timestamp": "2025-12-30T00:46:45.390793",
+    "category": "Basic Python",
+    "topic": "Factorial"
+  },
+  "scores": {
+    "pylint_score": 10.0,
+    "complexity_score": 7.0,
+    "loc_score": 10.0,
+    "structural_score": 5.0,
+    "logic_score": 9.0,
+    "cyclomatic_score": 9.0,
+    "mi_score": 6.41,
+    "composite_score": 8.47
+  },
+  "raw_outputs": {
+    "pylint": "--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)",
+    "ast": [
+      "Variable `calculate_factorial_iterative` used before assignment (line 13).",
+      "Variable `n` used before assignment (line 2).",
+      "Variable `n` used before assignment (line 4).",
+      "Variable `i` used before assignment (line 9).",
+      "Variable `n` used before assignment (line 8)."
+    ],
+    "math_llm": "No mathematical issues found or the model returned an empty response.",
+    "complexity_llm": "time_complexity: O(n),\nspace_complexity: O(1),\nexplanation: The time complexity, or how long it takes to run this algorithm relative to the input size 'n', is determined by the for loop that iterates from 1 through n. In each iteration of the loop, a single multiplication operation occurs and therefore scales linearly with respect to its input size - making O(n) appropriate time complexity notation in Big-O terms. Meanwhile, since this function uses only constant space (a fixed number of integer variables), it holds an overall space complexity of O(1).\nefficiency_score: 7"
+  },
+  "final_report": "\nCODE ANALYSIS REPORT\n-----------------------------------------------\nLINES OF CODE: 13\nFunctions: 1\nClasses: 0\n\nScore: 10/10\n\n---------- STRUCTURAL ERRORS (AST) ----------\nVariable `calculate_factorial_iterative` used before assignment (line 13).\nVariable `n` used before assignment (line 2).\nVariable `n` used before assignment (line 4).\nVariable `i` used before assignment (line 9).\nVariable `n` used before assignment (line 8).\n\nScore: 5.0/10\n\n---------- PYLINT ----------\n--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)\n\nScore: 10.0/10\n\n---------- CYCLOMATIC COMPLEXITY ----------\nGrade: A\nScore: 4.0\nRemarks: CC Range (1-5): Very simple and clear.\n\n---------- MAINTAINABILITY INDEX ----------\nGrade: A\nScore: 64.1\nRemarks: MI Range (65-100): Highly maintainable \u2014 clean and simple\n\n---------- MATHEMATICAL / ALGORITHMIC ERRORS (LLM) ----------\nNo mathematical issues found or the model returned an empty response.\n\n---------- TIME/SPACE COMPLEXITY & READABILITY ----------\ntime_complexity: O(n),\nspace_complexity: O(1),\nexplanation: The time complexity, or how long it takes to run this algorithm relative to the input size 'n', is determined by the for loop that iterates from 1 through n. In each iteration of the loop, a single multiplication operation occurs and therefore scales linearly with respect to its input size - making O(n) appropriate time complexity notation in Big-O terms. Meanwhile, since this function uses only constant space (a fixed number of integer variables), it holds an overall space complexity of O(1).\nefficiency_score: 7\n\n---------- COMPOSITE SCORE FOR YOUR CODE ----------\n8.47\n\n--------------------------------------------\n",
+  "comparison": {
+    "user_scores": {
+      "complexity_score": 7.0,
+      "composite_score": 8.47,
+      "cyclomatic_score": 9.0,
+      "loc_score": 10.0,
+      "logic_score": 9.0,
+      "mi_score": 6.41,
+      "pylint_score": 10.0,
+      "structural_score": 5.0
+    },
+    "optimal_scores": {
+      "pylint_score": 9.5,
+      "complexity_score": 9.0,
+      "loc_score": 9.5,
+      "structural_score": 9.0,
+      "logic_score": 10.0,
+      "cyclomatic_score": 10.0,
+      "mi_score": 9.6,
+      "composite_score": 9.42
+    },
+    "differences": {
+      "complexity_score": -2.0,
+      "composite_score": -0.95,
+      "cyclomatic_score": -1.0,
+      "loc_score": 0.5,
+      "logic_score": -1.0,
+      "mi_score": -3.19,
+      "pylint_score": 0.5,
+      "structural_score": -4.0
+    },
+    "kb_reference": {
+      "category": "Basic Python",
+      "topic": "Factorial"
+    }
+  }
+}

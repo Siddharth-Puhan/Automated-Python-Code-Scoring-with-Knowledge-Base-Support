@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "analysis_id": "56d29127-dc4d-4878-b2ec-028d78c4de91",
+    "timestamp": "2025-12-30T05:49:13.735142",
+    "category": "Basic Python",
+    "topic": "Recursive Fibonacci"
+  },
+  "scores": {
+    "pylint_score": 10.0,
+    "complexity_score": 1.0,
+    "loc_score": 10.0,
+    "structural_score": 3.0,
+    "logic_score": 9.0,
+    "cyclomatic_score": 10.0,
+    "mi_score": 9.91,
+    "composite_score": 7.1
+  },
+  "raw_outputs": {
+    "pylint": "--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)",
+    "ast": [
+      "Variable `n` used before assignment (line 2).",
+      "Variable `n` used before assignment (line 3).",
+      "Variable `fibonacci_recursive` used before assignment (line 8).",
+      "Variable `fibonacci_recursive` used before assignment (line 5).",
+      "Variable `fibonacci_recursive` used before assignment (line 5).",
+      "Variable `n` used before assignment (line 5).",
+      "Variable `n` used before assignment (line 5)."
+    ],
+    "math_llm": "No mathematical issues found or the model returned an empty response.",
+    "complexity_llm": "```python\ntime_complexity: \"O(2^n)\",\nspace_complexity: \"O(n)\",\nexplanation: \"The time complexity is exponential O(2^n) because the function makes two calls to itself for each call. This results in a binary tree of recursive calls, where every node at depth 'd' has 2^d children (minus one root). The space complexity is linear O(n) due to the recursion stack - there will be n nested levels of recursive calls before reaching down to base cases.\",\nefficiency_score: 1\n```"
+  },
+  "final_report": "\nCODE ANALYSIS REPORT\n-----------------------------------------------\nLINES OF CODE: 6\nFunctions: 1\nClasses: 0\n\nScore: 10/10\n\n---------- STRUCTURAL ERRORS (AST) ----------\nVariable `n` used before assignment (line 2).\nVariable `n` used before assignment (line 3).\nVariable `fibonacci_recursive` used before assignment (line 8).\nVariable `fibonacci_recursive` used before assignment (line 5).\nVariable `fibonacci_recursive` used before assignment (line 5).\nVariable `n` used before assignment (line 5).\nVariable `n` used before assignment (line 5).\n\nScore: 3.0/10\n\n---------- PYLINT ----------\n--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)\n\nScore: 10.0/10\n\n---------- CYCLOMATIC COMPLEXITY ----------\nGrade: A\nScore: 2.0\nRemarks: CC Range (1-5): Very simple and clear.\n\n---------- MAINTAINABILITY INDEX ----------\nGrade: A\nScore: 99.07\nRemarks: MI Range (65-100): Highly maintainable \u2014 clean and simple\n\n---------- MATHEMATICAL / ALGORITHMIC ERRORS (LLM) ----------\nNo mathematical issues found or the model returned an empty response.\n\n---------- TIME/SPACE COMPLEXITY & READABILITY ----------\n```python\ntime_complexity: \"O(2^n)\",\nspace_complexity: \"O(n)\",\nexplanation: \"The time complexity is exponential O(2^n) because the function makes two calls to itself for each call. This results in a binary tree of recursive calls, where every node at depth 'd' has 2^d children (minus one root). The space complexity is linear O(n) due to the recursion stack - there will be n nested levels of recursive calls before reaching down to base cases.\",\nefficiency_score: 1\n```\n\n---------- COMPOSITE SCORE FOR YOUR CODE ----------\n7.1\n\n--------------------------------------------\n",
+  "comparison": {
+    "user_scores": {
+      "complexity_score": 1.0,
+      "composite_score": 7.1,
+      "cyclomatic_score": 10.0,
+      "loc_score": 10.0,
+      "logic_score": 9.0,
+      "mi_score": 9.91,
+      "pylint_score": 10.0,
+      "structural_score": 3.0
+    },
+    "optimal_scores": {
+      "pylint_score": 7.0,
+      "complexity_score": 4.0,
+      "loc_score": 5.0,
+      "structural_score": 8.5,
+      "logic_score": 6.0,
+      "cyclomatic_score": 10.0,
+      "mi_score": 6.5,
+      "composite_score": 5.41
+    },
+    "differences": {
+      "complexity_score": -3.0,
+      "composite_score": 1.69,
+      "cyclomatic_score": 0.0,
+      "loc_score": 5.0,
+      "logic_score": 3.0,
+      "mi_score": 3.41,
+      "pylint_score": 3.0,
+      "structural_score": -5.5
+    },
+    "kb_reference": {
+      "category": "Basic Python",
+      "topic": "Recursive Fibonacci"
+    }
+  }
+}

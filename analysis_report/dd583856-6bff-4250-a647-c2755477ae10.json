@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "analysis_id": "dd583856-6bff-4250-a647-c2755477ae10",
+    "timestamp": "2025-12-29T10:09:15.077786",
+    "category": "Basic Python",
+    "topic": "Factorial"
+  },
+  "scores": {
+    "pylint_score": 10.0,
+    "complexity_score": 8.0,
+    "loc_score": 10.0,
+    "structural_score": 5.0,
+    "logic_score": 8.0,
+    "cyclomatic_score": 9.0,
+    "mi_score": 6.41,
+    "composite_score": 8.42
+  },
+  "raw_outputs": {
+    "pylint": "--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)",
+    "ast": [
+      "Variable `calculate_factorial_iterative` used before assignment (line 13).",
+      "Variable `n` used before assignment (line 2).",
+      "Variable `n` used before assignment (line 4).",
+      "Variable `i` used before assignment (line 9).",
+      "Variable `n` used before assignment (line 8)."
+    ],
+    "math_llm": "No mathematical issues found or the model returned an empty response.",
+    "complexity_llm": "time_complexity: O(n),\nspace_complexity: O(1),\nexplanation: The time complexity, or running time, of this algorithm scales linearly with the size of its input 'n' because it contains a single loop that iterates from 1 to n. This means if we double the number, the computation will take roughly twice as long assuming each operation within the loop takes constant time. Space complexity is O(1) since no additional space (storage memory aside for storing inputs or outputs) grows with input size 'n'. Only a fixed amount of variables are used regardless of 'n', which in this case includes only two: `num` and `result`.\nefficiency_score: 8"
+  },
+  "final_report": "\nCODE ANALYSIS REPORT\n-----------------------------------------------\nLINES OF CODE: 13\nFunctions: 1\nClasses: 0\n\nScore: 10/10\n\n---------- STRUCTURAL ERRORS (AST) ----------\nVariable `calculate_factorial_iterative` used before assignment (line 13).\nVariable `n` used before assignment (line 2).\nVariable `n` used before assignment (line 4).\nVariable `i` used before assignment (line 9).\nVariable `n` used before assignment (line 8).\n\nScore: 5.0/10\n\n---------- PYLINT ----------\n--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)\n\nScore: 10.0/10\n\n---------- CYCLOMATIC COMPLEXITY ----------\nGrade: A\nScore: 4.0\nRemarks: CC Range (1-5): Very simple and clear.\n\n---------- MAINTAINABILITY INDEX ----------\nGrade: A\nScore: 64.1\nRemarks: MI Range (65-100): Highly maintainable \u2014 clean and simple\n\n---------- MATHEMATICAL / ALGORITHMIC ERRORS (LLM) ----------\nNo mathematical issues found or the model returned an empty response.\n\n---------- TIME/SPACE COMPLEXITY & READABILITY ----------\ntime_complexity: O(n),\nspace_complexity: O(1),\nexplanation: The time complexity, or running time, of this algorithm scales linearly with the size of its input 'n' because it contains a single loop that iterates from 1 to n. This means if we double the number, the computation will take roughly twice as long assuming each operation within the loop takes constant time. Space complexity is O(1) since no additional space (storage memory aside for storing inputs or outputs) grows with input size 'n'. Only a fixed amount of variables are used regardless of 'n', which in this case includes only two: `num` and `result`.\nefficiency_score: 8\n\n---------- COMPOSITE SCORE FOR YOUR CODE ----------\n8.42\n\n--------------------------------------------\n"
+}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{ category_pretty }} — Topics</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+  <style>
+    body { background:#121212; color:#f5f5f5; min-height:100vh; }
+    .card { background:#1a1a1a; border-radius:10px; }
+    a { color:inherit; }
+    .search-field { background:#161616; border-radius:8px; padding:0.5rem; }
+    .topic-item { background:#141414; border-radius:8px; padding:1rem; margin-bottom:0.7rem; }
+    .title { color:#00d1b2; }
+  </style>
+</head>
+<body>
+<section class="section">
+  <div class="container">
+    <a href="{{ url_for('kb_index') }}" class="button is-text">&larr; Back to Categories</a>
+    <h1 class="title mt-3">{{ category_pretty }}</h1>
+
+    <div class="box" style="background:#1a1a1a;">
+      <form method="get" action="{{ url_for('kb_category', category_slug=category_slug) }}">
+        <div class="field has-addons">
+          <div class="control is-expanded">
+            <input class="input" name="q" placeholder="Search topics by name..." value="{{ q }}">
+          </div>
+          <div class="control">
+            <button class="button is-primary">Search</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="mt-4">
+        {% if topics %}
+          {% for t in topics %}
+            <div class="topic-item">
+              <a href="{{ url_for('kb_detail', category_slug=category_slug, topic_slug=t.slug) }}">
+                <h3 class="has-text-weight-semibold">{{ t.topic }}</h3>
+              </a>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="content has-text-centered has-text-grey-light">
+            No topics found for this category or search.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

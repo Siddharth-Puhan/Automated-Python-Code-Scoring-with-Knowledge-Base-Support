@@ -1,0 +1,121 @@
+[
+  {
+    "category": "List Comprehension",
+    "topic": "Squares of numbers",
+    "description": "Generates a list of squares of numbers using list comprehension.",
+    "optimal_code": {
+      "list_comprehension": "squares = [x**2 for x in range(1, n+1)]"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 1
+    },
+    "tags": ["list comprehension", "squares", "math"]
+  },
+  {
+    "category": "List Comprehension",
+    "topic": "Even numbers filter",
+    "description": "Filters even numbers from a list using list comprehension.",
+    "optimal_code": {
+      "list_comprehension": "evens = [x for x in numbers if x % 2 == 0]"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 2,
+      "lines_of_code": 1
+    },
+    "tags": ["list comprehension", "filter", "even numbers"]
+  },
+  {
+    "category": "List Comprehension",
+    "topic": "Convert all words to uppercase",
+    "description": "Converts all words in a list to uppercase using list comprehension.",
+    "optimal_code": {
+      "list_comprehension": "upper_words = [word.upper() for word in words]"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 1
+    },
+    "tags": ["list comprehension", "strings", "uppercase"]
+  },
+  {
+    "category": "List Comprehension",
+    "topic": "Create all (x, y) pairs for two lists",
+    "description": "Generates all possible (x, y) pairs from two lists using list comprehension.",
+    "optimal_code": {
+      "list_comprehension": "pairs = [(x, y) for x in list1 for y in list2]"
+    },
+    "complexity": {
+      "time": "O(n*m)",
+      "space": "O(n*m)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 2,
+      "lines_of_code": 1
+    },
+    "tags": ["list comprehension", "pairs", "cartesian product"]
+  },
+  {
+    "category": "List Comprehension",
+    "topic": "Convert a list of lists into a flat list",
+    "description": "Flattens a nested list into a single list using list comprehension.",
+    "optimal_code": {
+      "list_comprehension": "flat_list = [item for sublist in nested_list for item in sublist]"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 2,
+      "lines_of_code": 1
+    },
+    "tags": ["list comprehension", "flatten", "nested lists"]
+  },
+  {
+    "category": "List Comprehension",
+    "topic": "Replace negative numbers with 0",
+    "description": "Replaces negative numbers in a list with 0 using list comprehension.",
+    "optimal_code": {
+      "list_comprehension": "non_negative = [x if x >= 0 else 0 for x in numbers]"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 2,
+      "lines_of_code": 1
+    },
+    "tags": ["list comprehension", "conditional", "numbers"]
+  },
+  {
+    "category": "List Comprehension",
+    "topic": "Get all digits in a string",
+    "description": "Extracts all digit characters from a string using list comprehension.",
+    "optimal_code": {
+      "list_comprehension": "digits = [ch for ch in s if ch.isdigit()]"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 2,
+      "lines_of_code": 1
+    },
+    "tags": ["list comprehension", "strings", "digits"]
+  }
+]

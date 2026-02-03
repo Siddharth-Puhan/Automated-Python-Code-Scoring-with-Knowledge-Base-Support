@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>KB — Categories</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+  <style>
+    body { background:#121212; color:#f5f5f5; min-height:100vh; }
+    .card { background:#1a1a1a; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.4); }
+    .folder { background:#161616; border-radius:14px; padding:2.5rem 1.5rem; text-align:center; transition: transform .12s ease; }
+    .folder:hover { transform: translateY(-6px); box-shadow: 0 6px 18px rgba(0,0,0,0.6); }
+    .folder .icon { font-size: 3rem; }
+    a { color: inherit; text-decoration: none; }
+    .title { color: #00d1b2; }
+    .box { background:#1a1a1a; }
+  </style>
+</head>
+<body>
+<section class="section">
+  <div class="container">
+    <h1 class="title has-text-centered">Knowledge Base</h1>
+    <p class="subtitle has-text-centered has-text-grey-light">Browse categories and topics</p>
+
+    <div class="columns is-multiline">
+      {% for cat in categories %}
+      <div class="column is-one-quarter-desktop is-half-tablet">
+        <a href="{{ url_for('kb_category', category_slug=cat.slug) }}">
+          <div class="folder">
+            <div class="icon">📁</div>
+            <h3 class="has-text-weight-semibold mt-3">{{ cat.pretty }}</h3>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if not categories %}
+      <div class="box has-text-centered mt-5">
+        No categories found. Make sure `Knowledge_base/` contains JSON files.
+      </div>
+    {% endif %}
+
+    <div class="field has-text-centered mt-3">
+    <a href="/">
+        <button type="button" class="button is-primary is-medium">Code Analysis</button>
+    </a>
+    </div>
+  </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "analysis_id": "8efe6ce9-8d86-4391-86df-bbbd9f5b7333",
+    "timestamp": "2025-12-30T00:40:19.405359",
+    "category": "List Comprehension",
+    "topic": "Replace negative numbers with 0"
+  },
+  "scores": {
+    "pylint_score": 10.0,
+    "complexity_score": 8.0,
+    "loc_score": 10.0,
+    "structural_score": 5.0,
+    "logic_score": 8.0,
+    "cyclomatic_score": 9.0,
+    "mi_score": 6.41,
+    "composite_score": 8.42
+  },
+  "raw_outputs": {
+    "pylint": "--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)",
+    "ast": [
+      "Variable `calculate_factorial_iterative` used before assignment (line 13).",
+      "Variable `n` used before assignment (line 2).",
+      "Variable `n` used before assignment (line 4).",
+      "Variable `i` used before assignment (line 9).",
+      "Variable `n` used before assignment (line 8)."
+    ],
+    "math_llm": "No mathematical issues found or the model returned an empty response.",
+    "complexity_llm": "```plaintext\ntime_complexity: O(n),\nspace_complexity: O(1),\nexplanation: The time complexity for this algorithm is O(n) because the 'for' loop runs n times, where each iteration performs a constant amount of work (multiplying two numbers). Therefore, as n increases, the running time will increase linearly. Space complexity is O(1) since it uses only a fixed amount of space regardless of input size; this includes variables like `num`, `result`, and even temporary variable for multiplication in each iteration are not used beyond their assignment scope or operation which does not require additional memory allocation as the loop progresses, resulting to constant space complexity.\nefficiency_score: 8\n```\n"
+  },
+  "final_report": "\nCODE ANALYSIS REPORT\n-----------------------------------------------\nLINES OF CODE: 13\nFunctions: 1\nClasses: 0\n\nScore: 10/10\n\n---------- STRUCTURAL ERRORS (AST) ----------\nVariable `calculate_factorial_iterative` used before assignment (line 13).\nVariable `n` used before assignment (line 2).\nVariable `n` used before assignment (line 4).\nVariable `i` used before assignment (line 9).\nVariable `n` used before assignment (line 8).\n\nScore: 5.0/10\n\n---------- PYLINT ----------\n--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)\n\nScore: 10.0/10\n\n---------- CYCLOMATIC COMPLEXITY ----------\nGrade: A\nScore: 4.0\nRemarks: CC Range (1-5): Very simple and clear.\n\n---------- MAINTAINABILITY INDEX ----------\nGrade: A\nScore: 64.1\nRemarks: MI Range (65-100): Highly maintainable \u2014 clean and simple\n\n---------- MATHEMATICAL / ALGORITHMIC ERRORS (LLM) ----------\nNo mathematical issues found or the model returned an empty response.\n\n---------- TIME/SPACE COMPLEXITY & READABILITY ----------\n```plaintext\ntime_complexity: O(n),\nspace_complexity: O(1),\nexplanation: The time complexity for this algorithm is O(n) because the 'for' loop runs n times, where each iteration performs a constant amount of work (multiplying two numbers). Therefore, as n increases, the running time will increase linearly. Space complexity is O(1) since it uses only a fixed amount of space regardless of input size; this includes variables like `num`, `result`, and even temporary variable for multiplication in each iteration are not used beyond their assignment scope or operation which does not require additional memory allocation as the loop progresses, resulting to constant space complexity.\nefficiency_score: 8\n```\n\n\n---------- COMPOSITE SCORE FOR YOUR CODE ----------\n8.42\n\n--------------------------------------------\n"
+}

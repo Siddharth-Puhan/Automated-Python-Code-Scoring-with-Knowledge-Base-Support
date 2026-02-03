@@ -1,0 +1,122 @@
+[
+  {
+    "category": "Graph",
+    "topic": "Represent graph (Adjacency list/matrix)",
+    "description": "Shows how to represent a graph using both an adjacency list and adjacency matrix.",
+    "optimal_code": {
+      "adjacency_list": "graph = {\n    'A': ['B', 'C'],\n    'B': ['A', 'D'],\n    'C': ['A', 'D'],\n    'D': ['B', 'C']\n}",
+      "adjacency_matrix": "matrix = [\n    [0, 1, 1, 0],\n    [1, 0, 0, 1],\n    [1, 0, 0, 1],\n    [0, 1, 1, 0]\n]"
+    },
+    "complexity": {
+      "time": "O(V^2) for adjacency matrix, O(V + E) for adjacency list",
+      "space": "O(V^2) for matrix, O(V + E) for list"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 8
+    },
+    "tags": ["graph", "adjacency list", "adjacency matrix", "representation"]
+  },
+  {
+    "category": "Graph",
+    "topic": "Add vertex / edge",
+    "description": "Implements methods to add vertices and edges dynamically in an adjacency list representation of a graph.",
+    "optimal_code": {
+      "graph_methods": "class Graph:\n    def __init__(self):\n        self.graph = {}\n\n    def add_vertex(self, v):\n        if v not in self.graph:\n            self.graph[v] = []\n\n    def add_edge(self, u, v):\n        self.graph.setdefault(u, []).append(v)\n        self.graph.setdefault(v, []).append(u)"
+    },
+    "complexity": {
+      "time": "O(1) per addition",
+      "space": "O(V + E)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 2,
+      "lines_of_code": 9
+    },
+    "tags": ["graph", "add vertex", "add edge", "adjacency list"]
+  },
+  {
+    "category": "Graph",
+    "topic": "Depth First Search (DFS)",
+    "description": "Performs Depth First Search traversal of a graph using recursion or stack.",
+    "optimal_code": {
+      "recursive_dfs": "def dfs(graph, node, visited=None):\n    if visited is None:\n        visited = set()\n    visited.add(node)\n    for neighbor in graph[node]:\n        if neighbor not in visited:\n            dfs(graph, neighbor, visited)\n    return visited"
+    },
+    "complexity": {
+      "time": "O(V + E)",
+      "space": "O(V)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 3,
+      "lines_of_code": 7
+    },
+    "tags": ["graph", "DFS", "recursion", "traversal"]
+  },
+  {
+    "category": "Graph",
+    "topic": "Breadth First Search (BFS)",
+    "description": "Traverses the graph level by level using a queue-based Breadth First Search algorithm.",
+    "optimal_code": {
+      "bfs_queue": "from collections import deque\n\ndef bfs(graph, start):\n    visited, queue = set([start]), deque([start])\n    while queue:\n        node = queue.popleft()\n        for neighbor in graph[node]:\n            if neighbor not in visited:\n                visited.add(neighbor)\n                queue.append(neighbor)\n    return visited"
+    },
+    "complexity": {
+      "time": "O(V + E)",
+      "space": "O(V)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 3,
+      "lines_of_code": 9
+    },
+    "tags": ["graph", "BFS", "queue", "traversal"]
+  },
+  {
+    "category": "Graph",
+    "topic": "Detect cycle (DFS-based)",
+    "description": "Detects if an undirected graph contains a cycle using Depth First Search.",
+    "optimal_code": {
+      "dfs_cycle_detection": "def has_cycle(graph):\n    visited = set()\n\n    def dfs(v, parent):\n        visited.add(v)\n        for neighbor in graph[v]:\n            if neighbor not in visited:\n                if dfs(neighbor, v):\n                    return True\n            elif neighbor != parent:\n                return True\n        return False\n\n    for node in graph:\n        if node not in visited:\n            if dfs(node, None):\n                return True\n    return False"
+    },
+    "complexity": {
+      "time": "O(V + E)",
+      "space": "O(V)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 4,
+      "lines_of_code": 14
+    },
+    "tags": ["graph", "DFS", "cycle detection", "recursion"]
+  },
+  {
+    "category": "Graph",
+    "topic": "Count connected components",
+    "description": "Counts the number of connected components in an undirected graph using DFS traversal.",
+    "optimal_code": {
+      "dfs_component_count": "def count_components(graph):\n    visited = set()\n    count = 0\n\n    def dfs(node):\n        visited.add(node)\n        for neighbor in graph[node]:\n            if neighbor not in visited:\n                dfs(neighbor)\n\n    for node in graph:\n        if node not in visited:\n            dfs(node)\n            count += 1\n    return count"
+    },
+    "complexity": {
+      "time": "O(V + E)",
+      "space": "O(V)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 4,
+      "lines_of_code": 13
+    },
+    "tags": ["graph", "DFS", "connected components", "count"]
+  },
+  {
+    "category": "Graph",
+    "topic": "Shortest path (basic Dijkstra)",
+    "description": "Finds the shortest path from a source vertex to all other vertices using Dijkstra’s algorithm with a priority queue.",
+    "optimal_code": {
+      "dijkstra": "import heapq\n\ndef dijkstra(graph, start):\n    dist = {v: float('inf') for v in graph}\n    dist[start] = 0\n    pq = [(0, start)]\n    while pq:\n        d, u = heapq.heappop(pq)\n        if d > dist[u]:\n            continue\n        for v, w in graph[u]:\n            if dist[u] + w < dist[v]:\n                dist[v] = dist[u] + w\n                heapq.heappush(pq, (dist[v], v))\n    return dist"
+    },
+    "complexity": {
+      "time": "O((V + E) log V)",
+      "space": "O(V)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 5,
+      "lines_of_code": 13
+    },
+    "tags": ["graph", "dijkstra", "shortest path", "priority queue"]
+  }
+]

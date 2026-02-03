@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Full Analysis Report</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<section class="section">
+  <div class="container">
+
+    <h1 class="title">Code Analysis Report</h1>
+
+    <p><strong>Analysis ID:</strong> {{ report.meta.analysis_id }}</p>
+    <p><strong>Category:</strong> {{ report.meta.category }}</p>
+    <p><strong>Topic:</strong> {{ report.meta.topic }}</p>
+    <p><strong>Generated:</strong> {{ report.meta.timestamp }}</p>
+
+    <hr>
+
+    <h2 class="subtitle">Composite Score</h2>
+    <p class="has-text-weight-bold is-size-4">
+        {{ report.scores.composite_score }}
+    </p>
+
+    <hr>
+
+    <h2 class="subtitle">Individual Scores</h2>
+    <ul>
+        <li>Pylint: {{ report.scores.pylint_score }}</li>
+        <li>Logic: {{ report.scores.logic_score }}</li>
+        <li>Structural: {{ report.scores.structural_score }}</li>
+        <li>Cyclomatic: {{ report.scores.cyclomatic_score }}</li>
+        <li>Maintainability Index: {{ report.scores.mi_score }}</li>
+    </ul>
+
+    <hr>
+    <h2 class="title is-4">Score Comparison</h2>
+    <canvas id="scoreChart"></canvas>
+
+    <script>
+    window.comparison = {{ report.comparison | tojson | safe }};
+
+    const labels = Object.keys(window.comparison.user_scores);
+    const userScores = Object.values(window.comparison.user_scores);
+    const optimalScores = Object.values(window.comparison.optimal_scores);
+
+    const ctx = document.getElementById("scoreChart");
+
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: "Your Score",
+                    data: userScores,
+                },
+                {
+                    label: "Optimal Score",
+                    data: optimalScores,
+                }
+            ]
+        }
+    });
+
+    setTimeout(() => {
+        const img = ctx.toDataURL("image/png");
+        document.getElementById("chartImage").value = img;
+    }, 500);
+    </script>
+
+    <input type="hidden" id="chartImage" name="chart_image">
+
+    {% if report.comparison %}
+    <table class="table is-fullwidth is-bordered is-striped">
+    <thead>
+        <tr>
+        <th>Metric</th>
+        <th>Your Score</th>
+        <th>Optimal Score</th>
+        <th>Difference</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for k, v in report.comparison.user_scores.items() %}
+        <tr>
+        <td>{{ k.replace("_", " ") }}</td>
+        <td>{{ v }}</td>
+        <td>{{ report.comparison.optimal_scores[k] }}</td>
+        <td>{{ report.comparison.differences[k] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    {% endif %}
+
+    <hr>
+
+    <h2 class="subtitle">Full Detailed Report</h2>
+    <pre style="padding:1rem;">
+{{ report.final_report }}
+    </pre>
+
+    <form method="POST" action="/report/{{ report.meta.analysis_id }}/pdf">
+    <input type="hidden" id="chartImage" name="chart_image">
+    
+    <div class="has-text-centered mt-5">
+        <button type="submit" class="button is-primary is-outlined">
+        Download PDF
+        </button>
+    </div>
+    </form>
+
+
+    <div class="has-text-centered mt-5">
+    <a href="/"
+    class="button is-primary is-outlined">
+    Home
+    </a>
+    </div>
+
+
+  </div>
+</section>
+</body>
+</html>

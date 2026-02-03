@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "analysis_id": "446675ea-6d6b-487d-b38c-01de89e5a30e",
+    "timestamp": "2025-12-30T06:38:49.726203",
+    "category": "Graph",
+    "topic": "Shortest path (basic Dijkstra)"
+  },
+  "scores": {
+    "pylint_score": 9.41,
+    "complexity_score": 8.0,
+    "loc_score": 6.0,
+    "structural_score": 0.0,
+    "logic_score": 8.0,
+    "cyclomatic_score": 8.0,
+    "mi_score": 6.13,
+    "composite_score": 7.76
+  },
+  "raw_outputs": {
+    "pylint": "************* Module temp_code\ntemp_code.py:3:13: W0621: Redefining name 'graph' from outer scope (line 24) (redefined-outer-name)\n\n------------------------------------------------------------------\nYour code has been rated at 9.41/10 (previous run: 9.41/10, +0.00)",
+    "ast": [
+      "Variable `node` used before assignment (line 4).",
+      "Variable `start` used before assignment (line 5).",
+      "Variable `dijkstra` used before assignment (line 31).",
+      "Variable `start` used before assignment (line 6).",
+      "Variable `current_distance` used before assignment (line 11).",
+      "Variable `current_node` used before assignment (line 14).",
+      "Variable `heapq` used before assignment (line 9).",
+      "Variable `current_node` used before assignment (line 11).",
+      "Variable `current_distance` used before assignment (line 15).",
+      "Variable `weight` used before assignment (line 15).",
+      "Variable `neighbor` used before assignment (line 17).",
+      "Variable `neighbor` used before assignment (line 18).",
+      "Variable `heapq` used before assignment (line 19).",
+      "Variable `neighbor` used before assignment (line 19)."
+    ],
+    "math_llm": "No mathematical issues found or the model returned an empty response.",
+    "complexity_llm": "time_complexity: O((V+E) * log V),\nspace_complexity: O(V + E),\nexplanation: The time complexity is dominated by the heap operations (heappop and heappush), which are implemented as a binary min-heap, resulting in an overall complexity of O((V+E) * log V), where 'V' stands for vertices/nodes and 'E' for edges. Space complexity takes into account both the input graph represented by dictionaries (which requires space linear to the number of unique nodes plus their connections or adjacency list, hence O(V + E)) as well as additional data structures used during execution like distance arrays and priority queues which also require similar amount of memory proportional to 'V' and 'E'.\nefficiency_score: 8"
+  },
+  "final_report": "\nCODE ANALYSIS REPORT\n-----------------------------------------------\nLINES OF CODE: 22\nFunctions: 1\nClasses: 0\n\nScore: 6.0/10\n\n---------- STRUCTURAL ERRORS (AST) ----------\nVariable `node` used before assignment (line 4).\nVariable `start` used before assignment (line 5).\nVariable `dijkstra` used before assignment (line 31).\nVariable `start` used before assignment (line 6).\nVariable `current_distance` used before assignment (line 11).\nVariable `current_node` used before assignment (line 14).\nVariable `heapq` used before assignment (line 9).\nVariable `current_node` used before assignment (line 11).\nVariable `current_distance` used before assignment (line 15).\nVariable `weight` used before assignment (line 15).\nVariable `neighbor` used before assignment (line 17).\nVariable `neighbor` used before assignment (line 18).\nVariable `heapq` used before assignment (line 19).\nVariable `neighbor` used before assignment (line 19).\n\nScore: 0.0/10\n\n---------- PYLINT ----------\n************* Module temp_code\ntemp_code.py:3:13: W0621: Redefining name 'graph' from outer scope (line 24) (redefined-outer-name)\n\n------------------------------------------------------------------\nYour code has been rated at 9.41/10 (previous run: 9.41/10, +0.00)\n\nScore: 9.41/10\n\n---------- CYCLOMATIC COMPLEXITY ----------\nGrade: B\nScore: 6.0\nRemarks: CC Range (6-10): Slight complexity.\n\n---------- MAINTAINABILITY INDEX ----------\nGrade: A\nScore: 61.28\nRemarks: MI Range (65-100): Highly maintainable \u2014 clean and simple\n\n---------- MATHEMATICAL / ALGORITHMIC ERRORS (LLM) ----------\nNo mathematical issues found or the model returned an empty response.\n\n---------- TIME/SPACE COMPLEXITY & READABILITY ----------\ntime_complexity: O((V+E) * log V),\nspace_complexity: O(V + E),\nexplanation: The time complexity is dominated by the heap operations (heappop and heappush), which are implemented as a binary min-heap, resulting in an overall complexity of O((V+E) * log V), where 'V' stands for vertices/nodes and 'E' for edges. Space complexity takes into account both the input graph represented by dictionaries (which requires space linear to the number of unique nodes plus their connections or adjacency list, hence O(V + E)) as well as additional data structures used during execution like distance arrays and priority queues which also require similar amount of memory proportional to 'V' and 'E'.\nefficiency_score: 8\n\n---------- COMPOSITE SCORE FOR YOUR CODE ----------\n7.76\n\n--------------------------------------------\n"
+}

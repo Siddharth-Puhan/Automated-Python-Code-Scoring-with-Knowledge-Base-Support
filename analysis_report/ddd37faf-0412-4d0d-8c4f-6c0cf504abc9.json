@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "analysis_id": "ddd37faf-0412-4d0d-8c4f-6c0cf504abc9",
+    "timestamp": "2025-12-29T10:31:28.791886",
+    "category": "Basic Python",
+    "topic": "Factorial"
+  },
+  "scores": {
+    "pylint_score": 10.0,
+    "complexity_score": 9.0,
+    "loc_score": 10.0,
+    "structural_score": 5.0,
+    "logic_score": 8.0,
+    "cyclomatic_score": 9.0,
+    "mi_score": 6.41,
+    "composite_score": 8.67
+  },
+  "raw_outputs": {
+    "pylint": "--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)",
+    "ast": [
+      "Variable `calculate_factorial_iterative` used before assignment (line 13).",
+      "Variable `n` used before assignment (line 2).",
+      "Variable `n` used before assignment (line 4).",
+      "Variable `i` used before assignment (line 9).",
+      "Variable `n` used before assignment (line 8)."
+    ],
+    "math_llm": "No mathematical issues found or the model returned an empty response.",
+    "complexity_llm": "time_complexity: O(n),\nspace_complexity: O(1),\nexplanation: The time complexity is O(n) because the function iterates n times, each loop multiplying an integer from 1 to n. There are no nested loops or recursive calls that would increase this complexity exponentially; therefore, it scales linearly with input size 'n'. Space complexity is O(1), meaning constant space usage irrespective of input data as the function uses a fixed amount of extra storage regardless of whether n equals 0 (returning an integer value) or any positive number. The code effectively calculates factorial iteratively and does not use additional memory that would grow with 'n'.\nefficiency_score: 9"
+  },
+  "final_report": "\nCODE ANALYSIS REPORT\n-----------------------------------------------\nLINES OF CODE: 13\nFunctions: 1\nClasses: 0\n\nScore: 10/10\n\n---------- STRUCTURAL ERRORS (AST) ----------\nVariable `calculate_factorial_iterative` used before assignment (line 13).\nVariable `n` used before assignment (line 2).\nVariable `n` used before assignment (line 4).\nVariable `i` used before assignment (line 9).\nVariable `n` used before assignment (line 8).\n\nScore: 5.0/10\n\n---------- PYLINT ----------\n--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)\n\nScore: 10.0/10\n\n---------- CYCLOMATIC COMPLEXITY ----------\nGrade: A\nScore: 4.0\nRemarks: CC Range (1-5): Very simple and clear.\n\n---------- MAINTAINABILITY INDEX ----------\nGrade: A\nScore: 64.1\nRemarks: MI Range (65-100): Highly maintainable \u2014 clean and simple\n\n---------- MATHEMATICAL / ALGORITHMIC ERRORS (LLM) ----------\nNo mathematical issues found or the model returned an empty response.\n\n---------- TIME/SPACE COMPLEXITY & READABILITY ----------\ntime_complexity: O(n),\nspace_complexity: O(1),\nexplanation: The time complexity is O(n) because the function iterates n times, each loop multiplying an integer from 1 to n. There are no nested loops or recursive calls that would increase this complexity exponentially; therefore, it scales linearly with input size 'n'. Space complexity is O(1), meaning constant space usage irrespective of input data as the function uses a fixed amount of extra storage regardless of whether n equals 0 (returning an integer value) or any positive number. The code effectively calculates factorial iteratively and does not use additional memory that would grow with 'n'.\nefficiency_score: 9\n\n---------- COMPOSITE SCORE FOR YOUR CODE ----------\n8.67\n\n--------------------------------------------\n"
+}

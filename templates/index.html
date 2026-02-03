@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Code Explainer & Analyzer</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+  <style>
+    body {
+      background-color: #121212;
+      color: #f5f5f5;
+      min-height: 100vh;
+    }
+    textarea {
+      font-family: monospace;
+      height: 400px;
+      background-color: #1e1e1e;
+      color: #f5f5f5;
+      border: none;
+      resize: vertical;
+    }
+    pre {
+      background: #1e1e1e;
+      color: #e5e5e5;
+      padding: 1rem;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .card {
+      background-color: #1a1a1a;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    }
+    .card-header {
+      background-color: #00d1b2;
+      color: #fff;
+      font-weight: bold;
+    }
+    .button:hover {
+      box-shadow: 0 0 10px rgba(0, 209, 178, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="notification
+     {% if category == 'warning' %}is-warning
+     {% elif category == 'error' %}is-danger
+     {% else %}is-primary{% endif %}">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="notification is-{{ 'warning' if category == 'warning' else 'info' }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <h1 class="title has-text-centered has-text-primary-light">Python Code Explainer & Analyzer</h1>
+      <p class="subtitle has-text-centered has-text-grey-light">Understand your code and check its quality instantly.</p>
+
+      <div class="box" style="background-color:#1a1a1a;">
+        <form action="/explain" method="post" enctype="multipart/form-data">
+          <div class="field">
+            <label class="label has-text-light">Paste your Python code below or upload a .py file:</label>
+            <textarea class="textarea is-medium" name="code" rows="15">{{ code or '' }}</textarea>
+          </div>
+
+          <div class="file has-name is-fullwidth">
+            <label class="file-label">
+              <input class="file-input" type="file" name="file" accept=".py">
+              <span class="file-cta">
+                <span class="file-icon">📂</span>
+                <span class="file-label">Choose a .py file…</span>
+              </span>
+              <span class="file-name" id="file-name">No file selected</span>
+            </label>
+          </div>
+
+          <div class="field has-text-centered mt-3">
+            <button class="button is-primary is-medium">Explain Code</button>
+            <a href="/kb">
+                <button type="button" class="button is-primary is-medium">Knowledge Base</button>
+            </a>
+          </div>
+        </form>
+      </div>
+
+      {% if explanation %}
+      <div class="card mt-5">
+        <header class="card-header">
+          <p class="card-header-title">Explanation</p>
+        </header>
+        <div class="card-content">
+          {% if category and topic %}
+          <div class="tags has-addons mb-3">
+            <span class="tag is-medium is-info">Category</span>
+            <span class="tag is-medium is-light">{{ category }}</span>
+          </div>
+          <div class="tags has-addons mb-4">
+            <span class="tag is-medium is-success">Topic</span>
+            <span class="tag is-medium is-light">{{ topic }}</span>
+          </div>
+          {% endif %}
+
+          <div class="content">
+            {% for paragraph in explanation.split('\n') %}
+              {% if paragraph.strip() %}
+                <p>{{ paragraph }}</p>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      {% if valid_code %}
+      <form action="/analyze" method="post">
+          <input type="hidden" name="code" value="{{ code }}">
+          <input type="hidden" name="category" value="{{ category }}">
+          <input type="hidden" name="topic" value="{{ topic }}">
+
+          <div class="field has-text-centered mt-3">
+              <button class="button is-primary is-medium">Analyze Code</button>
+          </div>
+      </form>
+      {% endif %}
+      {% endif %}
+
+      {% if analysis %}
+      <div class="card mt-5">
+        <header class="card-header is-primary">
+          <p class="card-header-title" style="color: black;">Static Analysis</p>
+        </header>
+        <div class="card-content">
+          <pre>{{ analysis }}</pre>
+        </div>
+      </div>
+      {% endif %}
+      {% if analysis %}
+      <div class="field has-text-centered mt-4">
+          <a href="/compare">
+              <button class="button is-primary is-medium">
+                  Compare with Optimal Code
+              </button>
+          </a>
+      </div>
+      {% endif %}
+
+    </div>
+  </section>
+
+  <script>
+    const fileInput = document.querySelector('.file-input');
+    const fileName = document.getElementById('file-name');
+    if (fileInput) {
+      fileInput.addEventListener('change', () => {
+        fileName.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file selected';
+      });
+    }
+  </script>
+</body>
+</html>

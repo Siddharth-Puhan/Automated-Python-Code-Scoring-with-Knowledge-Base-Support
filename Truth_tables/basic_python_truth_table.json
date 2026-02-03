@@ -1,0 +1,688 @@
+[
+  {
+    "category": "Basic Python",
+    "topic": "Recursive Factorial",
+    "variant": "recursive",
+    "description": "Truth table entry for Factorial (recursive)",
+    "metrics": {
+    "loc": 5,
+    "functions": 1,
+    "classes": 0,
+    "pylint_score": 9.0,
+    "complexity_score": 8.0,
+    "loc_score": 9.0,
+    "structural_score": 9.0,
+    "logic_score": 10.0,
+    "math_score": 10.0,
+    "cyclomatic_complexity": 2,
+    "cyclomatic_score": 10.0,
+    "maintainability_index": 95,
+    "composite_score": 9.05
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "truth_table": [
+      {
+        "input": 0,
+        "expected": 1,
+        "notes": "base case"
+      },
+      {
+        "input": 1,
+        "expected": 1,
+        "notes": "base case"
+      },
+      {
+        "input": 5,
+        "expected": 120,
+        "notes": "small n"
+      },
+      {
+        "input": 10,
+        "expected": 3628800,
+        "notes": "larger n"
+      }
+    ]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Iterative Factorial",
+    "variant": "iterative",
+    "description": "truth table entry for Factorial (iterative)",
+    "metrics": {
+      "loc": 7,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 9.5,
+      "complexity_score": 9.0,
+      "loc_score": 9.5,
+      "structural_score": 9.0,
+      "logic_score": 10.0,
+      "math_score": 10.0,
+      "cyclomatic_complexity": 2,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 96,
+      "composite_score": 9.42
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "truth_table": [
+      {
+        "input": 0,
+        "expected": 1,
+        "notes": "base case"
+      },
+      {
+        "input": 1,
+        "expected": 1,
+        "notes": "base case"
+      },
+      {
+        "input": 5,
+        "expected": 120,
+        "notes": "small n"
+      },
+      {
+        "input": 10,
+        "expected": 3628800,
+        "notes": "larger n"
+      }
+    ]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Recursive Fibonacci",
+    "variant": "recursive",
+    "description": "truth table entry for Fibonacci (recursive)",
+    "metrics": {
+      "loc": 6,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 7.0,
+      "complexity_score": 4.0,
+      "loc_score": 5.0,
+      "structural_score": 8.5,
+      "logic_score": 6.0,
+      "math_score": 6.0,
+      "cyclomatic_complexity": 3,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 65,
+      "composite_score": 5.41
+    },
+    "complexity": {
+      "time": "O(2^n)",
+      "space": "O(n)"
+    },
+    "truth_table": [
+      {
+        "input": 0,
+        "expected": 0,
+        "notes": "base case"
+      },
+      {
+        "input": 1,
+        "expected": 1,
+        "notes": "base case"
+      },
+      {
+        "input": 6,
+        "expected": 8,
+        "notes": "small n"
+      }
+    ]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Iterative Fibonacci",
+    "variant": "iterative",
+    "description": "truth table entry for Fibonacci (iterative)",
+    "metrics": {
+      "loc": 8,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 9.0,
+      "complexity_score": 9.0,
+      "loc_score": 9.0,
+      "structural_score": 9.0,
+      "logic_score": 10.0,
+      "math_score": 10.0,
+      "cyclomatic_complexity": 2,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 90,
+      "composite_score": 9.05
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "truth_table": [
+      {
+        "input": 0,
+        "expected": 0
+      },
+      {
+        "input": 1,
+        "expected": 1
+      },
+      {
+        "input": 20,
+        "expected": 6765,
+        "notes": "iterative works efficiently"
+      }
+    ]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Palindrome",
+    "variant": "recursive",
+    "description": "truth table entry for Palindrome (recursive)",
+    "metrics": {
+      "loc": 7,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 9.0,
+      "complexity_score": 8.0,
+      "loc_score": 9.0,
+      "structural_score": 9.0,
+      "logic_score": 10.0,
+      "math_score": 10.0,
+      "cyclomatic_complexity": 3,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 92,
+      "composite_score": 9.05
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "truth_table": [
+      {
+        "input": "radar",
+        "expected": true,
+        "notes": "odd-length"
+      },
+      {
+        "input": "level",
+        "expected": true
+      },
+      {
+        "input": "hello",
+        "expected": false
+      }
+    ]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Palindrome",
+    "variant": "iterative",
+    "description": "truth table entry for Palindrome (iterative)",
+    "metrics": {
+      "loc": 6,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 9.5,
+      "complexity_score": 9.5,
+      "loc_score": 9.5,
+      "structural_score": 9.0,
+      "logic_score": 10.0,
+      "math_score": 10.0,
+      "cyclomatic_complexity": 2,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 95,
+      "composite_score": 9.58
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "truth_table": [
+      {
+        "input": "radar",
+        "expected": true,
+        "notes": "odd-length"
+      },
+      {
+        "input": "level",
+        "expected": true
+      },
+      {
+        "input": "hello",
+        "expected": false
+      }
+    ]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Reverse String",
+    "variant": "recursive",
+    "description": "truth table entry for Reverse String (recursive)",
+    "metrics": {
+      "loc": 7,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 8.0,
+      "complexity_score": 7.0,
+      "loc_score": 8.0,
+      "structural_score": 8.5,
+      "logic_score": 9.0,
+      "math_score": 9.0,
+      "cyclomatic_complexity": 3,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 88,
+      "composite_score": 7.79
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "truth_table": [
+      {
+        "input": "hello",
+        "expected": "olleh"
+      },
+      {
+        "input": "",
+        "expected": "",
+        "notes": "empty string"
+      },
+      {
+        "input": "a",
+        "expected": "a",
+        "notes": "single char"
+      }
+    ]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Reverse String",
+    "variant": "iterative",
+    "description": "truth table entry for Reverse String (iterative)",
+    "metrics": {
+      "loc": 5,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 9.5,
+      "complexity_score": 9.5,
+      "loc_score": 9.5,
+      "structural_score": 9.0,
+      "logic_score": 10.0,
+      "math_score": 10.0,
+      "cyclomatic_complexity": 2,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 95,
+      "composite_score": 9.58
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "truth_table": [
+      {
+        "input": "hello",
+        "expected": "olleh"
+      },
+      {
+        "input": "",
+        "expected": "",
+        "notes": "empty string"
+      },
+      {
+        "input": "a",
+        "expected": "a",
+        "notes": "single char"
+      }
+    ]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Prime Number",
+    "variant": "recursive",
+    "description": "truth table entry for Prime Number (recursive)",
+    "metrics": {
+      "loc": 10,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 8.0,
+      "complexity_score": 7.0,
+      "loc_score": 8.0,
+      "structural_score": 8.0,
+      "logic_score": 9.0,
+      "math_score": 9.0,
+      "cyclomatic_complexity": 4,
+      "cyclomatic_score": 9.0,
+      "maintainability_index": 85,
+      "composite_score": 8.04
+    },
+    "complexity": {
+      "time": "O(√n)",
+      "space": "O(√n)"
+    },
+    "truth_table": [
+      {
+        "input": 2,
+        "expected": true
+      },
+      {
+        "input": 15,
+        "expected": false
+      },
+      {
+        "input": 17,
+        "expected": true
+      }
+    ]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Prime Number",
+    "variant": "iterative",
+    "description": "truth table entry for Prime Number (iterative)",
+    "metrics": {
+      "loc": 9,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 9.0,
+      "complexity_score": 9.0,
+      "loc_score": 9.0,
+      "structural_score": 9.0,
+      "logic_score": 9.0,
+      "math_score": 9.0,
+      "cyclomatic_complexity": 3,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 92,
+      "composite_score": 8.81
+    },
+    "complexity": {
+      "time": "O(√n)",
+      "space": "O(1)"
+    },
+    "truth_table": [
+      {
+        "input": 2,
+        "expected": true
+      },
+      {
+        "input": 15,
+        "expected": false
+      },
+      {
+        "input": 17,
+        "expected": true
+      }
+    ]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Armstrong Number",
+    "variant": "recursive",
+    "description": "truth table entry for Armstrong Number (recursive)",
+    "metrics": {
+      "loc": 11,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 7.5,
+      "complexity_score": 6.5,
+      "loc_score": 7.5,
+      "structural_score": 8.5,
+      "logic_score": 8.0,
+      "math_score": 8.0,
+      "cyclomatic_complexity": 4,
+      "cyclomatic_score": 9.0,
+      "maintainability_index": 84,
+      "composite_score": 7.15
+    },
+    "complexity": {
+      "time": "O(d), where d is the number of digits",
+      "space": "O(d)"
+    },
+    "truth_table": [
+      {
+        "input": 153,
+        "expected": true,
+        "notes": "3-digit Armstrong"
+      },
+      {
+        "input": 9474,
+        "expected": true,
+        "notes": "4-digit Armstrong"
+      },
+      {
+        "input": 123,
+        "expected": false
+      }
+    ]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Armstrong Number",
+    "variant": "iterative",
+    "description": "truth table entry for Armstrong Number (iterative)",
+    "metrics": {
+      "loc": 10,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 8.5,
+      "complexity_score": 8.0,
+      "loc_score": 8.5,
+      "structural_score": 8.0,
+      "logic_score": 9.0,
+      "math_score": 9.0,
+      "cyclomatic_complexity": 4,
+      "cyclomatic_score": 9.0,
+      "maintainability_index": 90,
+      "composite_score": 8.24
+    },
+    "complexity": {
+      "time": "O(d), where d is the number of digits",
+      "space": "O(1)"
+    },
+    "truth_table": [
+      {
+        "input": 153,
+        "expected": true,
+        "notes": "3-digit Armstrong"
+      },
+      {
+        "input": 9474,
+        "expected": true,
+        "notes": "4-digit Armstrong"
+      },
+      {
+        "input": 123,
+        "expected": false
+      }
+    ]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "GCD / LCM using recursion",
+    "variant": "recursive",
+    "description": "truth table entry for GCD / LCM using recursion (recursive)",
+    "metrics": {
+      "loc": 12,
+      "functions": 2,
+      "classes": 0,
+      "pylint_score": 9.0,
+      "complexity_score": 9.0,
+      "loc_score": 9.0,
+      "structural_score": 9.5,
+      "logic_score": 9.5,
+      "math_score": 9.5,
+      "cyclomatic_complexity": 3,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 93,
+      "composite_score": 9.26
+    },
+    "complexity": {
+      "time": "O(log(min(a,b)))",
+      "space": "O(log(min(a,b)))"
+    },
+    "truth_table": [
+      {
+        "input": [
+          48,
+          18
+        ],
+        "expected": {
+          "gcd": 6,
+          "lcm": 144
+        }
+      },
+      {
+        "input": [
+          7,
+          3
+        ],
+        "expected": {
+          "gcd": 1,
+          "lcm": 21
+        }
+      }
+    ]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "GCD / LCM using recursion",
+    "variant": "iterative",
+    "description": "Auto-generated truth table entry for GCD / LCM using recursion (iterative)",
+    "metrics": {
+      "loc": 13,
+      "functions": 2,
+      "classes": 0,
+      "pylint_score": 9.5,
+      "complexity_score": 9.5,
+      "loc_score": 9.5,
+      "structural_score": 9.5,
+      "logic_score": 9.5,
+      "math_score": 9.5,
+      "cyclomatic_complexity": 3,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 95,
+      "composite_score": 9.58
+    },
+    "complexity": {
+      "time": "O(log(min(a,b)))",
+      "space": "O(log(min(a,b))) recursion / O(1) iteration"
+    },
+    "truth_table": [
+      {
+        "input": [
+          48,
+          18
+        ],
+        "expected": {
+          "gcd": 6,
+          "lcm": 144
+        }
+      },
+      {
+        "input": [
+          7,
+          3
+        ],
+        "expected": {
+          "gcd": 1,
+          "lcm": 21
+        }
+      }
+    ]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Swap two numbers without a temp variable",
+    "variant": "arithmetic",
+    "description": "Auto-generated truth table entry for Swap two numbers without a temp variable (arithmetic)",
+    "metrics": {
+      "loc": 4,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 9.8,
+      "complexity_score": 9.8,
+      "loc_score": 9.8,
+      "structural_score": 9.5,
+      "logic_score": 9.8,
+      "math_score": 10.0,
+      "cyclomatic_complexity": 2,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 97,
+      "composite_score": 9.82
+    },
+    "complexity": {
+      "time": "O(1)",
+      "space": "O(1)"
+    },
+    "truth_table": [
+      {
+        "input": [
+          3,
+          5
+        ],
+        "expected": [
+          5,
+          3
+        ]
+      },
+      {
+        "input": [
+          -1,
+          4
+        ],
+        "expected": [
+          4,
+          -1
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Swap two numbers without a temp variable",
+    "variant": "bitwise",
+    "description": "Auto-generated truth table entry for Swap two numbers without a temp variable (bitwise)",
+    "metrics": {
+      "loc": 4,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 9.8,
+      "complexity_score": 9.8,
+      "loc_score": 9.8,
+      "structural_score": 9.5,
+      "logic_score": 9.8,
+      "math_score": 10.0,
+      "cyclomatic_complexity": 2,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 97,
+      "composite_score": 9.82
+    },
+    "complexity": {
+      "time": "O(1)",
+      "space": "O(1)"
+    },
+    "truth_table": [
+      {
+        "input": [
+          3,
+          5
+        ],
+        "expected": [
+          5,
+          3
+        ]
+      },
+      {
+        "input": [
+          -1,
+          4
+        ],
+        "expected": [
+          4,
+          -1
+        ]
+      }
+    ]
+  }
+]

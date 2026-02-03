@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "analysis_id": "c519f80e-8bbb-4ff1-b957-768f27995aa6",
+    "timestamp": "2025-12-30T06:33:00.169928",
+    "category": "Graph",
+    "topic": "Shortest path (basic Dijkstra)"
+  },
+  "scores": {
+    "pylint_score": 9.41,
+    "complexity_score": 0.0,
+    "loc_score": 6.0,
+    "structural_score": 0.0,
+    "logic_score": 8.0,
+    "cyclomatic_score": 8.0,
+    "mi_score": 6.13,
+    "composite_score": 5.76
+  },
+  "raw_outputs": {
+    "pylint": "************* Module temp_code\ntemp_code.py:3:13: W0621: Redefining name 'graph' from outer scope (line 24) (redefined-outer-name)\n\n------------------------------------------------------------------\nYour code has been rated at 9.41/10 (previous run: 9.41/10, +0.00)",
+    "ast": [
+      "Variable `node` used before assignment (line 4).",
+      "Variable `start` used before assignment (line 5).",
+      "Variable `dijkstra` used before assignment (line 31).",
+      "Variable `start` used before assignment (line 6).",
+      "Variable `current_distance` used before assignment (line 11).",
+      "Variable `current_node` used before assignment (line 14).",
+      "Variable `heapq` used before assignment (line 9).",
+      "Variable `current_node` used before assignment (line 11).",
+      "Variable `current_distance` used before assignment (line 15).",
+      "Variable `weight` used before assignment (line 15).",
+      "Variable `neighbor` used before assignment (line 17).",
+      "Variable `neighbor` used before assignment (line 18).",
+      "Variable `heapq` used before assignment (line 19).",
+      "Variable `neighbor` used before assignment (line 19)."
+    ],
+    "math_llm": "No mathematical issues found or the model returned an empty response.",
+    "complexity_llm": "time_complexity: O((V+E) * log V), where V is the number of vertices and E is the number of edges in the graph. The time complexity comes from the fact that for each vertex we're potentially scanning all adjacent nodes (O(E)) which are then heapified using a priority queue, resulting overall to O((V+E) * log V)).\nspace_complexity: O(V + E). This is because at most 'n' vertices and edges can be in the priority queue for Dijkstra\u2019s algorithm. However, extra space needed by data structures such as sets or dictionaries used may add to this complexity but it remains linearly proportional with respect to input size thus remaining within O(V + E).\nexplanation: The time efficiency of a graph traversal depends on the implementation and characteristics of the graph (e.g., sparse vs dense, connected components etc.). Generally speaking, Dijkstra's algorithm operates at best-case complexity when using a priority queue such as heapq in python which is O(E + V log V) since each edge gets considered once while building the result and for every node it scans its neighbors. The space efficiency comes from storing distances to all vertices, edges used (in our case just one per step), along with any additional data structures needed like priority queue or set operations which are O(V + E). \nefficiency_score: Given the time complexity and that we're using a heap for optimizing Dijkstra\u2019s algorithm over Priority Queue implementation, I would give this an efficiency score of 8.5 out of 10 as it is quite efficient especially on sparse graphs but not optimal in dense graph scenarios where A* or Johnson could perform better and faster due to lower time complexity (O(E + V log V) vs O((V+E)/2)).\n"
+  },
+  "final_report": "\nCODE ANALYSIS REPORT\n-----------------------------------------------\nLINES OF CODE: 22\nFunctions: 1\nClasses: 0\n\nScore: 6.0/10\n\n---------- STRUCTURAL ERRORS (AST) ----------\nVariable `node` used before assignment (line 4).\nVariable `start` used before assignment (line 5).\nVariable `dijkstra` used before assignment (line 31).\nVariable `start` used before assignment (line 6).\nVariable `current_distance` used before assignment (line 11).\nVariable `current_node` used before assignment (line 14).\nVariable `heapq` used before assignment (line 9).\nVariable `current_node` used before assignment (line 11).\nVariable `current_distance` used before assignment (line 15).\nVariable `weight` used before assignment (line 15).\nVariable `neighbor` used before assignment (line 17).\nVariable `neighbor` used before assignment (line 18).\nVariable `heapq` used before assignment (line 19).\nVariable `neighbor` used before assignment (line 19).\n\nScore: 0.0/10\n\n---------- PYLINT ----------\n************* Module temp_code\ntemp_code.py:3:13: W0621: Redefining name 'graph' from outer scope (line 24) (redefined-outer-name)\n\n------------------------------------------------------------------\nYour code has been rated at 9.41/10 (previous run: 9.41/10, +0.00)\n\nScore: 9.41/10\n\n---------- CYCLOMATIC COMPLEXITY ----------\nGrade: B\nScore: 6.0\nRemarks: CC Range (6-10): Slight complexity.\n\n---------- MAINTAINABILITY INDEX ----------\nGrade: A\nScore: 61.28\nRemarks: MI Range (65-100): Highly maintainable \u2014 clean and simple\n\n---------- MATHEMATICAL / ALGORITHMIC ERRORS (LLM) ----------\nNo mathematical issues found or the model returned an empty response.\n\n---------- TIME/SPACE COMPLEXITY & READABILITY ----------\ntime_complexity: O((V+E) * log V), where V is the number of vertices and E is the number of edges in the graph. The time complexity comes from the fact that for each vertex we're potentially scanning all adjacent nodes (O(E)) which are then heapified using a priority queue, resulting overall to O((V+E) * log V)).\nspace_complexity: O(V + E). This is because at most 'n' vertices and edges can be in the priority queue for Dijkstra\u2019s algorithm. However, extra space needed by data structures such as sets or dictionaries used may add to this complexity but it remains linearly proportional with respect to input size thus remaining within O(V + E).\nexplanation: The time efficiency of a graph traversal depends on the implementation and characteristics of the graph (e.g., sparse vs dense, connected components etc.). Generally speaking, Dijkstra's algorithm operates at best-case complexity when using a priority queue such as heapq in python which is O(E + V log V) since each edge gets considered once while building the result and for every node it scans its neighbors. The space efficiency comes from storing distances to all vertices, edges used (in our case just one per step), along with any additional data structures needed like priority queue or set operations which are O(V + E). \nefficiency_score: Given the time complexity and that we're using a heap for optimizing Dijkstra\u2019s algorithm over Priority Queue implementation, I would give this an efficiency score of 8.5 out of 10 as it is quite efficient especially on sparse graphs but not optimal in dense graph scenarios where A* or Johnson could perform better and faster due to lower time complexity (O(E + V log V) vs O((V+E)/2)).\n\n\n---------- COMPOSITE SCORE FOR YOUR CODE ----------\n5.76\n\n--------------------------------------------\n"
+}

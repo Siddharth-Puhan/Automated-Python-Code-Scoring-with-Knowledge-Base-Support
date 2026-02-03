@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "analysis_id": "29119be4-b638-42c6-a9ec-214fbd8f4452",
+    "timestamp": "2025-12-30T07:15:14.453019",
+    "category": "Miscellaneous",
+    "topic": "Addition of Numbers"
+  },
+  "scores": {
+    "pylint_score": 10.0,
+    "complexity_score": 10.0,
+    "loc_score": 3.5,
+    "structural_score": 6.0,
+    "logic_score": 8.0,
+    "cyclomatic_score": 10.0,
+    "mi_score": 8.14,
+    "composite_score": 8.78
+  },
+  "raw_outputs": {
+    "pylint": "--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)",
+    "ast": [
+      "Variable `add` used before assignment (line 3).",
+      "Variable `c` used before assignment (line 1).",
+      "Variable `a` used before assignment (line 1).",
+      "Variable `b` used before assignment (line 1)."
+    ],
+    "math_llm": "No mathematical issues found or the model returned an empty response.",
+    "complexity_llm": "time_complexity: O(1),\nspace_complexity: O(1),\nexplanenz: The function 'add' performs a simple addition of three numbers which is an operation with constant time complexity and does not depend on the size or value of input variables. As such, it executes in constant time (O(1)). Additionally, no additional space that grows linearly to quadratic growth relative to the input sizes are used; thus, its space complexity remains O(1).\nefficiency_score: 10"
+  },
+  "final_report": "\nCODE ANALYSIS REPORT\n-----------------------------------------------\nLINES OF CODE: 2\nFunctions: 1\nClasses: 0\n\nScore: 3.5/10\n\n---------- STRUCTURAL ERRORS (AST) ----------\nVariable `add` used before assignment (line 3).\nVariable `c` used before assignment (line 1).\nVariable `a` used before assignment (line 1).\nVariable `b` used before assignment (line 1).\n\nScore: 6.0/10\n\n---------- PYLINT ----------\n--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)\n\nScore: 10.0/10\n\n---------- CYCLOMATIC COMPLEXITY ----------\nGrade: A\nScore: 1.0\nRemarks: CC Range (1-5): Very simple and clear.\n\n---------- MAINTAINABILITY INDEX ----------\nGrade: A\nScore: 81.45\nRemarks: MI Range (65-100): Highly maintainable \u2014 clean and simple\n\n---------- MATHEMATICAL / ALGORITHMIC ERRORS (LLM) ----------\nNo mathematical issues found or the model returned an empty response.\n\n---------- TIME/SPACE COMPLEXITY & READABILITY ----------\ntime_complexity: O(1),\nspace_complexity: O(1),\nexplanenz: The function 'add' performs a simple addition of three numbers which is an operation with constant time complexity and does not depend on the size or value of input variables. As such, it executes in constant time (O(1)). Additionally, no additional space that grows linearly to quadratic growth relative to the input sizes are used; thus, its space complexity remains O(1).\nefficiency_score: 10\n\n---------- COMPOSITE SCORE FOR YOUR CODE ----------\n8.78\n\n--------------------------------------------\n"
+}

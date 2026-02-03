@@ -1,0 +1,300 @@
+[
+  {
+  "category": "Basic Python",
+  "topic": "Recursive Factorial",
+  "description": "Computes the factorial of a number using recursion.",
+  "optimal_code": {
+    "recursive": "def factorial_recursive(n):\n    if n == 0 or n == 1:\n        return 1\n    return n * factorial_recursive(n - 1)"
+  },
+  "complexity": {
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "metrics": {
+    "cyclomatic_complexity": 2,
+    "lines_of_code": 5
+  },
+  "tags": ["recursion", "factorial", "math"]
+}
+,
+{
+  "category": "Basic Python",
+  "topic": "Iterative Factorial",
+  "description": "Computes the factorial of a number using iteration.",
+  "optimal_code": {
+    "iterative": "def factorial_iterative(n):\n    result = 1\n    for i in range(2, n + 1):\n        result *= i\n    return result"
+  },
+  "complexity": {
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "metrics": {
+    "cyclomatic_complexity": 2,
+    "lines_of_code": 5
+  },
+  "tags": ["iteration", "factorial", "math"]
+}
+,
+  {
+  "category": "Basic Python",
+  "topic": "Recursive Fibonacci",
+  "description": "Generates Fibonacci numbers using recursion.",
+  "optimal_code": {
+    "recursive": "def fibonacci_recursive(n):\n    if n <= 1:\n        return n\n    return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)"
+  },
+  "complexity": {
+    "time": "O(2^n)",
+    "space": "O(n)"
+  },
+  "metrics": {
+    "cyclomatic_complexity": 3,
+    "lines_of_code": 5
+  },
+  "tags": ["recursion", "fibonacci", "sequence", "math"]
+}
+,
+{
+  "category": "Basic Python",
+  "topic": "Iterative Fibonacci",
+  "description": "Generates Fibonacci numbers using iteration.",
+  "optimal_code": {
+    "iterative": "def fibonacci_iterative(n):\n    a, b = 0, 1\n    for _ in range(n):\n        a, b = b, a + b\n    return a"
+  },
+  "complexity": {
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "metrics": {
+    "cyclomatic_complexity": 3,
+    "lines_of_code": 6
+  },
+  "tags": ["iteration", "fibonacci", "sequence", "math"]
+}
+,
+{
+  "category": "Basic Python",
+  "topic": "Recursive Palindrome",
+  "description": "Checks whether a string is a palindrome using recursion.",
+  "optimal_code": {
+    "recursive": "def is_palindrome_recursive(s):\n    if len(s) <= 1:\n        return True\n    if s[0] != s[-1]:\n        return False\n    return is_palindrome_recursive(s[1:-1])"
+  },
+  "complexity": {
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "metrics": {
+    "cyclomatic_complexity": 3,
+    "lines_of_code": 6
+  },
+  "tags": ["recursion", "string", "palindrome"]
+}
+,
+{
+  "category": "Basic Python",
+  "topic": "Iterative Palindrome",
+  "description": "Checks whether a string is a palindrome using iteration.",
+  "optimal_code": {
+    "iterative": "def is_palindrome_iterative(s):\n    return s == s[::-1]"
+  },
+  "complexity": {
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "metrics": {
+    "cyclomatic_complexity": 1,
+    "lines_of_code": 2
+  },
+  "tags": ["iteration", "string", "palindrome"]
+}
+,
+{
+  "category": "Basic Python",
+  "topic": "Reverse String Recursive",
+  "description": "Reverses a string using recursion.",
+  "optimal_code": {
+    "recursive": "def reverse_recursive(s):\n    if len(s) == 0:\n        return s\n    return reverse_recursive(s[1:]) + s[0]"
+  },
+  "complexity": {
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "metrics": {
+    "cyclomatic_complexity": 2,
+    "lines_of_code": 4
+  },
+  "tags": ["recursion", "string", "reverse"]
+}
+,
+{
+  "category": "Basic Python",
+  "topic": "Reverse String Iterative",
+  "description": "Reverses a string using iteration.",
+  "optimal_code": {
+    "iterative": "def reverse_iterative(s):\n    rev = ''\n    for ch in s:\n        rev = ch + rev\n    return rev"
+  },
+  "complexity": {
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "metrics": {
+    "cyclomatic_complexity": 3,
+    "lines_of_code": 5
+  },
+  "tags": ["iteration", "string", "reverse"]
+}
+,
+  {
+    "category": "Basic Python",
+    "topic": "Prime Number (Recursive)",
+    "description": "Checks if a number is prime using a recursive approach.",
+    "optimal_code": {
+      "recursive": "def is_prime_recursive(n, i=2):\n    if n <= 2:\n        return n == 2\n    if n % i == 0:\n        return False\n    if i * i > n:\n        return True\n    return is_prime_recursive(n, i + 1)"
+    },
+    "complexity": {
+      "time": "O(√n)",
+      "space": "O(√n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 4,
+      "lines_of_code": 8
+    },
+    "tags": ["recursion", "prime", "number", "math"]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Prime Number (Iterative)",
+    "description": "Checks if a number is prime using an iterative approach.",
+    "optimal_code": {
+      "iterative": "def is_prime_iterative(n):\n    if n <= 1:\n        return False\n    for i in range(2, int(n ** 0.5) + 1):\n        if n % i == 0:\n            return False\n    return True"
+    },
+    "complexity": {
+      "time": "O(√n)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 3,
+      "lines_of_code": 7
+    },
+    "tags": ["iteration", "prime", "number", "math"]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Armstrong Number (Recursive)",
+    "description": "Checks if a number is an Armstrong number using recursion.",
+    "optimal_code": {
+      "recursive": "def is_armstrong_recursive(num, power=None):\n    if power is None:\n        power = len(str(num))\n    if num == 0:\n        return 0\n    return (num % 10) ** power + is_armstrong_recursive(num // 10, power)"
+    },
+    "complexity": {
+      "time": "O(d)",
+      "space": "O(d)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 4,
+      "lines_of_code": 7
+    },
+    "tags": ["recursion", "armstrong", "number", "math"]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Armstrong Number (Iterative)",
+    "description": "Checks if a number is an Armstrong number using iteration.",
+    "optimal_code": {
+      "iterative": "def is_armstrong_iterative(num):\n    power = len(str(num))\n    total = 0\n    temp = num\n    while temp > 0:\n        digit = temp % 10\n        total += digit ** power\n        temp //= 10\n    return total == num"
+    },
+    "complexity": {
+      "time": "O(d)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 4,
+      "lines_of_code": 8
+    },
+    "tags": ["iteration", "armstrong", "number", "math"]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "GCD (Recursive)",
+    "description": "Finds the greatest common divisor of two numbers using recursion.",
+    "optimal_code": {
+      "recursive": "def gcd_recursive(a, b):\n    if b == 0:\n        return a\n    return gcd_recursive(b, a % b)"
+    },
+    "complexity": {
+      "time": "O(log(min(a, b)))",
+      "space": "O(log(min(a, b)))"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 2,
+      "lines_of_code": 4
+    },
+    "tags": ["recursion", "gcd", "math"]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "GCD (Iterative)",
+    "description": "Finds the greatest common divisor of two numbers using iteration.",
+    "optimal_code": {
+      "iterative": "def gcd_iterative(a, b):\n    while b:\n        a, b = b, a % b\n    return a"
+    },
+    "complexity": {
+      "time": "O(log(min(a, b)))",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 2,
+      "lines_of_code": 4
+    },
+    "tags": ["iteration", "gcd", "math"]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "LCM",
+    "description": "Finds the least common multiple of two numbers using GCD.",
+    "optimal_code": {
+      "formula": "def lcm(a, b):\n    return abs(a * b) // gcd(a, b)"
+    },
+    "complexity": {
+      "time": "O(log(min(a, b)))",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 3
+    },
+    "tags": ["lcm", "math"]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Swap Two Numbers (Arithmetic)",
+    "description": "Swaps two numbers without using a temporary variable using arithmetic operations.",
+    "optimal_code": {
+      "arithmetic": "def swap_arithmetic(a, b):\n    a = a + b\n    b = a - b\n    a = a - b\n    return a, b"
+    },
+    "complexity": {
+      "time": "O(1)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 5
+    },
+    "tags": ["swap", "arithmetic", "numbers"]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Swap Two Numbers (Bitwise)",
+    "description": "Swaps two numbers without using a temporary variable using bitwise XOR.",
+    "optimal_code": {
+      "bitwise": "def swap_bitwise(a, b):\n    a = a ^ b\n    b = a ^ b\n    a = a ^ b\n    return a, b"
+    },
+    "complexity": {
+      "time": "O(1)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 5
+    },
+    "tags": ["swap", "bitwise", "numbers"]
+  }
+]
+

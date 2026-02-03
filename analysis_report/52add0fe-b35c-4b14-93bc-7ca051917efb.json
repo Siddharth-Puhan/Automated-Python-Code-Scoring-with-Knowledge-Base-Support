@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "analysis_id": "52add0fe-b35c-4b14-93bc-7ca051917efb",
+    "timestamp": "2025-12-30T05:02:52.122799",
+    "category": "Basic Python",
+    "topic": "Recursive Fibonacci"
+  },
+  "scores": {
+    "pylint_score": 10.0,
+    "complexity_score": 4.0,
+    "loc_score": 10.0,
+    "structural_score": 3.0,
+    "logic_score": 7.0,
+    "cyclomatic_score": 10.0,
+    "mi_score": 9.91,
+    "composite_score": 7.25
+  },
+  "raw_outputs": {
+    "pylint": "--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)",
+    "ast": [
+      "Variable `n` used before assignment (line 2).",
+      "Variable `n` used before assignment (line 3).",
+      "Variable `fibonacci_recursive` used before assignment (line 8).",
+      "Variable `fibonacci_recursive` used before assignment (line 5).",
+      "Variable `fibonacci_recursive` used before assignment (line 5).",
+      "Variable `n` used before assignment (line 5).",
+      "Variable `n` used before assignment (line 5)."
+    ],
+    "math_llm": "No mathematical issues found or the model returned an empty response.",
+    "complexity_llm": "time_complexity: O(1),\nspace_complexity: O(n),\nexplanation: The time complexity of this recursive implementation for Fibonacci sequence is technically not constant; however, since the function only computes and returns a single value (the nth Fibonacci number) with no nested loops or additional significant operations within that computation step, we can consider its time efficiency to be O(1). Nevertheless, it's essential to recognize this as an idealized assessment because recursive calls without memoization lead to repeated calculations. The space complexity is determined by the depth of the recursion call stack which grows linearly with n due to each function call adding a new layer on top of the previous one until reaching the base case, so it's O(n).\nefficiency_score: 4\n\n\n        CODE:\n        def factorial_memoized(n, memo={}):\n    if n < 2:\n        return 1\n    if n not in memo:\n        memo[n] = n * factorial_memoized(n-1)\n    return memo[n]\n\n# Example: Get the 5th Fibonacci number (0-indexed), with a twist of storing computed values for future calls.\nprint(factorial_memoized(5)) # Output should be incorrect since this is actually calculating factorials, not fibonnaci numbers."
+  },
+  "final_report": "\nCODE ANALYSIS REPORT\n-----------------------------------------------\nLINES OF CODE: 6\nFunctions: 1\nClasses: 0\n\nScore: 10/10\n\n---------- STRUCTURAL ERRORS (AST) ----------\nVariable `n` used before assignment (line 2).\nVariable `n` used before assignment (line 3).\nVariable `fibonacci_recursive` used before assignment (line 8).\nVariable `fibonacci_recursive` used before assignment (line 5).\nVariable `fibonacci_recursive` used before assignment (line 5).\nVariable `n` used before assignment (line 5).\nVariable `n` used before assignment (line 5).\n\nScore: 3.0/10\n\n---------- PYLINT ----------\n--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)\n\nScore: 10.0/10\n\n---------- CYCLOMATIC COMPLEXITY ----------\nGrade: A\nScore: 2.0\nRemarks: CC Range (1-5): Very simple and clear.\n\n---------- MAINTAINABILITY INDEX ----------\nGrade: A\nScore: 99.07\nRemarks: MI Range (65-100): Highly maintainable \u2014 clean and simple\n\n---------- MATHEMATICAL / ALGORITHMIC ERRORS (LLM) ----------\nNo mathematical issues found or the model returned an empty response.\n\n---------- TIME/SPACE COMPLEXITY & READABILITY ----------\ntime_complexity: O(1),\nspace_complexity: O(n),\nexplanation: The time complexity of this recursive implementation for Fibonacci sequence is technically not constant; however, since the function only computes and returns a single value (the nth Fibonacci number) with no nested loops or additional significant operations within that computation step, we can consider its time efficiency to be O(1). Nevertheless, it's essential to recognize this as an idealized assessment because recursive calls without memoization lead to repeated calculations. The space complexity is determined by the depth of the recursion call stack which grows linearly with n due to each function call adding a new layer on top of the previous one until reaching the base case, so it's O(n).\nefficiency_score: 4\n\n\n        CODE:\n        def factorial_memoized(n, memo={}):\n    if n < 2:\n        return 1\n    if n not in memo:\n        memo[n] = n * factorial_memoized(n-1)\n    return memo[n]\n\n# Example: Get the 5th Fibonacci number (0-indexed), with a twist of storing computed values for future calls.\nprint(factorial_memoized(5)) # Output should be incorrect since this is actually calculating factorials, not fibonnaci numbers.\n\n---------- COMPOSITE SCORE FOR YOUR CODE ----------\n7.25\n\n--------------------------------------------\n"
+}

@@ -1,0 +1,71 @@
+[
+  {
+    "category": "Search Algorithms",
+    "topic": "Linear / Sequential Search",
+    "description": "Searches for an element in a list by checking each element one by one.",
+    "optimal_code": {
+      "iterative": "def linear_search(arr, target):\n    for i, val in enumerate(arr):\n        if val == target:\n            return i\n    return -1"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 2,
+      "lines_of_code": 5
+    },
+    "tags": ["linear search", "sequential search", "search", "iteration"]
+  },
+  {
+    "category": "Search Algorithms",
+    "topic": "Binary Search",
+    "description": "Searches a sorted list by repeatedly dividing the search interval in half.",
+    "optimal_code": {
+      "iterative": "def binary_search_iterative(arr, target):\n    low, high = 0, len(arr) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return -1",
+      "recursive": "def binary_search_recursive(arr, target, low=0, high=None):\n    if high is None:\n        high = len(arr) - 1\n    if low > high:\n        return -1\n    mid = (low + high) // 2\n    if arr[mid] == target:\n        return mid\n    elif arr[mid] < target:\n        return binary_search_recursive(arr, target, mid + 1, high)\n    else:\n        return binary_search_recursive(arr, target, low, mid - 1)"
+    },
+    "complexity": {
+      "time": "O(log n)",
+      "space": "O(1) for iterative / O(log n) for recursive"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 4,
+      "lines_of_code": 10
+    },
+    "tags": ["binary search", "search", "divide and conquer", "recursive", "iteration"]
+  },
+  {
+    "category": "Search Algorithms",
+    "topic": "Interpolation Search",
+    "description": "Searches for a key in a sorted list by estimating the position using the value of the key.",
+    "optimal_code": {
+      "iterative": "def interpolation_search(arr, target):\n    low, high = 0, len(arr) - 1\n    while low <= high and target >= arr[low] and target <= arr[high]:\n        pos = low + ((high - low) * (target - arr[low])) // (arr[high] - arr[low])\n        if arr[pos] == target:\n            return pos\n        elif arr[pos] < target:\n            low = pos + 1\n        else:\n            high = pos - 1\n    return -1"
+    },
+    "complexity": {
+      "time": "O(log log n) for uniformly distributed / O(n) worst case",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 4,
+      "lines_of_code": 9
+    },
+    "tags": ["interpolation search", "search", "sorted list", "iteration"]
+  },
+  {
+    "category": "Search Algorithms",
+    "topic": "Jump Search",
+    "description": "Searches for an element in a sorted list by jumping ahead by fixed steps and then performing linear search within the block.",
+    "optimal_code": {
+      "iterative": "import math\n\ndef jump_search(arr, target):\n    n = len(arr)\n    step = int(math.sqrt(n))\n    prev = 0\n    while arr[min(step, n)-1] < target:\n        prev = step\n        step += int(math.sqrt(n))\n        if prev >= n:\n            return -1\n    for i in range(prev, min(step, n)):\n        if arr[i] == target:\n            return i\n    return -1"
+    },
+    "complexity": {
+      "time": "O(√n)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 4,
+      "lines_of_code": 12
+    },
+    "tags": ["jump search", "search", "sorted list", "iteration"]
+  }
+]
