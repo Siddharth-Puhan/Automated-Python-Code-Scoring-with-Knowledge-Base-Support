@@ -13,7 +13,7 @@ Architecture Diagram
 Match Found -> Compare with KB → Store Report    
             No Match
                ↓
-     Clarification / Disambiguation Prompt
+Clarification / Disambiguation Prompt
                ↓
       Provisional Categorization
                ↓
