@@ -12,6 +12,7 @@ from reportlab.platypus import Image
 from io import BytesIO
 from nltk.corpus import stopwords
 
+
 nlp = spacy.load("en_core_web_md")
 
 app = Flask(__name__)
@@ -152,8 +153,10 @@ def explain_code():
 
         path = os.path.join(UPLOAD_FOLDER, uploaded_file.filename)
         uploaded_file.save(path)
+
         with open(path, "r") as f:
             user_code = f.read().strip()
+
         os.remove(path)
 
     if not user_code:
@@ -238,7 +241,21 @@ CODE:
             valid_code=True
         )
 
+    from hard_overrides import match_hard_override
+
+    override_result = match_hard_override(user_code)
+
+    if override_result:
+        return render_template(
+            "index.html",
+            code=user_code,
+            explanation=explanation,
+            category=override_result["category"],
+            topic=override_result["topic"],
+            valid_code=True
+        )
     
+
     # LLM tag generation - mainly used to search the KB for the optimal solution
     # kb_index.json contains the categories and the topics within those categories
     with open("kb_index.json") as f:
