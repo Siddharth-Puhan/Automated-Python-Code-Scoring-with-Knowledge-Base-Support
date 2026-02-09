@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "analysis_id": "682b0f3a-bc94-47db-9fcc-63b8dfafb79e",
+    "timestamp": "2026-02-08T07:06:46.849368",
+    "category": "Basic Python",
+    "topic": "Iterative Factorial"
+  },
+  "scores": {
+    "pylint_score": 10.0,
+    "complexity_score": 8.0,
+    "loc_score": 10.0,
+    "structural_score": 6.0,
+    "logic_score": 8.0,
+    "cyclomatic_score": 10.0,
+    "mi_score": 6.69,
+    "composite_score": 8.53
+  },
+  "raw_outputs": {
+    "pylint": "--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)",
+    "ast": [
+      "Variable `calculate_factorial_iterative` used before assignment (line 11).",
+      "Variable `n` used before assignment (line 2).",
+      "Variable `i` used before assignment (line 7).",
+      "Variable `n` used before assignment (line 6)."
+    ],
+    "math_llm": "No mathematical issues found or the model returned an empty response.",
+    "complexity_llm": "```python\ntime_complexity: O(n),\nspace_complexity: O(1),\nexplanation: The given function calculates the factorial of a number iteratively. It runs through n iterations, each taking constant time to complete as it performs multiplication and assignment operations which are considered O(1). Therefore, its running time is directly proportional to the input size (n) resulting in an overall time complexity of O(n), where 'n' represents the given positive integer for which we want to find a factorial. The space complexity is constant because only two variables - `factorial` and `i`, are used throughout the function, irrespective of the problem size n; hence it requires no extra memory allocation as per input size making its space complexity O(1).\nefficiency_score: 8\n```\n"
+  },
+  "final_report": "\nCODE ANALYSIS REPORT\n-----------------------------------------------\nLINES OF CODE: 11\nFunctions: 1\nClasses: 0\n\nScore: 10/10\n\n---------- STRUCTURAL ERRORS (AST) ----------\nVariable `calculate_factorial_iterative` used before assignment (line 11).\nVariable `n` used before assignment (line 2).\nVariable `i` used before assignment (line 7).\nVariable `n` used before assignment (line 6).\n\nScore: 6.0/10\n\n---------- PYLINT ----------\n--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)\n\nScore: 10.0/10\n\n---------- CYCLOMATIC COMPLEXITY ----------\nGrade: A\nScore: 3.0\nRemarks: CC Range (1-5): Very simple and clear.\n\n---------- MAINTAINABILITY INDEX ----------\nGrade: A\nScore: 66.86\nRemarks: MI Range (65-100): Highly maintainable \u2014 clean and simple\n\n---------- MATHEMATICAL / ALGORITHMIC ERRORS (LLM) ----------\nNo mathematical issues found or the model returned an empty response.\n\n---------- TIME/SPACE COMPLEXITY & READABILITY ----------\n```python\ntime_complexity: O(n),\nspace_complexity: O(1),\nexplanation: The given function calculates the factorial of a number iteratively. It runs through n iterations, each taking constant time to complete as it performs multiplication and assignment operations which are considered O(1). Therefore, its running time is directly proportional to the input size (n) resulting in an overall time complexity of O(n), where 'n' represents the given positive integer for which we want to find a factorial. The space complexity is constant because only two variables - `factorial` and `i`, are used throughout the function, irrespective of the problem size n; hence it requires no extra memory allocation as per input size making its space complexity O(1).\nefficiency_score: 8\n```\n\n\n---------- COMPOSITE SCORE FOR YOUR CODE ----------\n8.53\n\n--------------------------------------------\n"
+}

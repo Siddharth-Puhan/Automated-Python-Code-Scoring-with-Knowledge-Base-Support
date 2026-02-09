@@ -1,0 +1,231 @@
+[
+  {
+    "category": "Graph",
+    "topic": "Represent graph (Adjacency list/matrix)",
+    "variant": "representation",
+    "description": "Truth table entry for Graph Representation",
+    "metrics": {
+      "loc": 8,
+      "functions": 0,
+      "classes": 0,
+      "pylint_score": 9.5,
+      "complexity_score": 9.0,
+      "loc_score": 9.0,
+      "structural_score": 9.5,
+      "logic_score": 9.5,
+      "math_score": 9.0,
+      "cyclomatic_complexity": 1,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 96,
+      "composite_score": 9.38
+    },
+    "complexity": {
+      "time": "O(V + E) list, O(V^2) matrix",
+      "space": "O(V + E) list, O(V^2) matrix"
+    },
+    "truth_table": [
+      {
+        "input": "4-node undirected graph",
+        "expected": "Correct adjacency list and matrix",
+        "notes": "basic representation"
+      }
+    ]
+  },
+  {
+    "category": "Graph",
+    "topic": "Add vertex / edge",
+    "variant": "adjacency_list",
+    "description": "Truth table entry for adding vertices and edges",
+    "metrics": {
+      "loc": 9,
+      "functions": 2,
+      "classes": 1,
+      "pylint_score": 9.2,
+      "complexity_score": 9.0,
+      "loc_score": 9.0,
+      "structural_score": 9.0,
+      "logic_score": 9.5,
+      "math_score": 8.5,
+      "cyclomatic_complexity": 2,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 94,
+      "composite_score": 9.24
+    },
+    "complexity": {
+      "time": "O(1)",
+      "space": "O(V + E)"
+    },
+    "truth_table": [
+      {
+        "input": ["A", "B"],
+        "expected": "Edge A-B added",
+        "notes": "undirected edge"
+      }
+    ]
+  },
+  {
+    "category": "Graph",
+    "topic": "Depth First Search (DFS)",
+    "variant": "recursive",
+    "description": "Truth table entry for DFS traversal",
+    "metrics": {
+      "loc": 7,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 8.8,
+      "complexity_score": 8.0,
+      "loc_score": 8.5,
+      "structural_score": 9.0,
+      "logic_score": 9.0,
+      "math_score": 8.5,
+      "cyclomatic_complexity": 3,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 90,
+      "composite_score": 8.69
+    },
+    "complexity": {
+      "time": "O(V + E)",
+      "space": "O(V)"
+    },
+    "truth_table": [
+      {
+        "input": "start=A",
+        "expected": ["A", "B", "D", "C"],
+        "notes": "DFS order may vary"
+      }
+    ]
+  },
+  {
+    "category": "Graph",
+    "topic": "Breadth First Search (BFS)",
+    "variant": "queue",
+    "description": "Truth table entry for BFS traversal",
+    "metrics": {
+      "loc": 9,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 9.0,
+      "complexity_score": 9.0,
+      "loc_score": 9.0,
+      "structural_score": 9.0,
+      "logic_score": 9.5,
+      "math_score": 8.5,
+      "cyclomatic_complexity": 3,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 92,
+      "composite_score": 9.05
+    },
+    "complexity": {
+      "time": "O(V + E)",
+      "space": "O(V)"
+    },
+    "truth_table": [
+      {
+        "input": "start=A",
+        "expected": ["A", "B", "C", "D"],
+        "notes": "level-order traversal"
+      }
+    ]
+  },
+  {
+    "category": "Graph",
+    "topic": "Detect cycle",
+    "variant": "dfs",
+    "description": "Truth table entry for cycle detection in graph",
+    "metrics": {
+      "loc": 14,
+      "functions": 2,
+      "classes": 0,
+      "pylint_score": 8.5,
+      "complexity_score": 7.5,
+      "loc_score": 8.0,
+      "structural_score": 8.5,
+      "logic_score": 9.0,
+      "math_score": 8.5,
+      "cyclomatic_complexity": 4,
+      "cyclomatic_score": 9.0,
+      "maintainability_index": 88,
+      "composite_score": 8.34
+    },
+    "complexity": {
+      "time": "O(V + E)",
+      "space": "O(V)"
+    },
+    "truth_table": [
+      {
+        "input": "graph with cycle",
+        "expected": true
+      },
+      {
+        "input": "tree graph",
+        "expected": false
+      }
+    ]
+  },
+  {
+    "category": "Graph",
+    "topic": "Count connected components",
+    "variant": "dfs",
+    "description": "Truth table entry for connected components count",
+    "metrics": {
+      "loc": 13,
+      "functions": 2,
+      "classes": 0,
+      "pylint_score": 9.0,
+      "complexity_score": 8.5,
+      "loc_score": 8.5,
+      "structural_score": 9.0,
+      "logic_score": 9.5,
+      "math_score": 8.5,
+      "cyclomatic_complexity": 4,
+      "cyclomatic_score": 9.0,
+      "maintainability_index": 91,
+      "composite_score": 8.94
+    },
+    "complexity": {
+      "time": "O(V + E)",
+      "space": "O(V)"
+    },
+    "truth_table": [
+      {
+        "input": "graph with 3 components",
+        "expected": 3
+      }
+    ]
+  },
+  {
+    "category": "Graph",
+    "topic": "Shortest path (Dijkstra)",
+    "variant": "priority_queue",
+    "description": "Truth table entry for Dijkstra shortest path",
+    "metrics": {
+      "loc": 13,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 8.0,
+      "complexity_score": 7.5,
+      "loc_score": 8.0,
+      "structural_score": 8.5,
+      "logic_score": 9.0,
+      "math_score": 9.0,
+      "cyclomatic_complexity": 5,
+      "cyclomatic_score": 8.5,
+      "maintainability_index": 86,
+      "composite_score": 8.17
+    },
+    "complexity": {
+      "time": "O((V + E) log V)",
+      "space": "O(V)"
+    },
+    "truth_table": [
+      {
+        "input": "start=A",
+        "expected": {
+          "A": 0,
+          "B": 1,
+          "C": 3
+        }
+      }
+    ]
+  }
+]

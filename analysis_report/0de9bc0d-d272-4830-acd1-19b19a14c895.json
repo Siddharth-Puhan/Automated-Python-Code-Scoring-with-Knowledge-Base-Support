@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "analysis_id": "0de9bc0d-d272-4830-acd1-19b19a14c895",
+    "timestamp": "2026-02-08T07:03:19.434110",
+    "category": "Basic Python",
+    "topic": "Iterative Factorial"
+  },
+  "scores": {
+    "pylint_score": 10.0,
+    "complexity_score": 8.0,
+    "loc_score": 10.0,
+    "structural_score": 5.0,
+    "logic_score": 0.0,
+    "cyclomatic_score": 9.0,
+    "mi_score": 6.41,
+    "composite_score": 6.02
+  },
+  "raw_outputs": {
+    "pylint": "--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)",
+    "ast": [
+      "Variable `calculate_factorial_iterative` used before assignment (line 13).",
+      "Variable `n` used before assignment (line 2).",
+      "Variable `n` used before assignment (line 4).",
+      "Variable `i` used before assignment (line 9).",
+      "Variable `n` used before assignment (line 8)."
+    ],
+    "math_llm": "No mathematical issues found or the model returned an empty response.",
+    "complexity_llm": "time_complexity: O(n),\nspace_complexity: O(1),\nexplanation: The time complexity of the given code snippet for calculating the factorial iteratively is linear, or O(n), because there's a single loop that runs n times where n is the input value. This makes it inefficient as the size of the number increases but typical applications won't encounter prohibitively large numbers here due to Python's int limitations and efficient handling of multiplication operations (which are generally constant time). The space complexity, however, only considers a fixed amount of memory used regardless of input size; hence O(1), as it does not use any additional significant storage other than variables on the stack.\nefficiency_score: 8"
+  },
+  "final_report": "\nCODE ANALYSIS REPORT\n-----------------------------------------------\nLINES OF CODE: 13\nFunctions: 1\nClasses: 0\n\nScore: 10/10\n\n---------- STRUCTURAL ERRORS (AST) ----------\nVariable `calculate_factorial_iterative` used before assignment (line 13).\nVariable `n` used before assignment (line 2).\nVariable `n` used before assignment (line 4).\nVariable `i` used before assignment (line 9).\nVariable `n` used before assignment (line 8).\n\nScore: 5.0/10\n\n---------- PYLINT ----------\n--------------------------------------------------------------------\nYour code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)\n\nScore: 10.0/10\n\n---------- CYCLOMATIC COMPLEXITY ----------\nGrade: A\nScore: 4.0\nRemarks: CC Range (1-5): Very simple and clear.\n\n---------- MAINTAINABILITY INDEX ----------\nGrade: A\nScore: 64.1\nRemarks: MI Range (65-100): Highly maintainable \u2014 clean and simple\n\n---------- MATHEMATICAL / ALGORITHMIC ERRORS (LLM) ----------\nNo mathematical issues found or the model returned an empty response.\n\n---------- TIME/SPACE COMPLEXITY & READABILITY ----------\ntime_complexity: O(n),\nspace_complexity: O(1),\nexplanation: The time complexity of the given code snippet for calculating the factorial iteratively is linear, or O(n), because there's a single loop that runs n times where n is the input value. This makes it inefficient as the size of the number increases but typical applications won't encounter prohibitively large numbers here due to Python's int limitations and efficient handling of multiplication operations (which are generally constant time). The space complexity, however, only considers a fixed amount of memory used regardless of input size; hence O(1), as it does not use any additional significant storage other than variables on the stack.\nefficiency_score: 8\n\n---------- COMPOSITE SCORE FOR YOUR CODE ----------\n6.02\n\n--------------------------------------------\n"
+}

@@ -10,6 +10,7 @@ from reportlab.lib import colors
 from flask import send_file
 from reportlab.platypus import Image
 from io import BytesIO
+from nltk.corpus import stopwords
 
 nlp = spacy.load("en_core_web_md")
 
@@ -113,10 +114,27 @@ def ast_structural_analysis(code):
     return issues
 
 
+
+
+
+
+
+
+
+
+
 # Homepage
 @app.route('/', methods=['GET'])
 def home():
     return render_template('index.html')
+
+
+
+
+
+
+
+
 
 
 # Code explanation using LLM 
@@ -159,11 +177,12 @@ def explain_code():
 You are a strict Python reviewer.
 Find logical issues and explain EXACTLY what the code does.
 
-1. Give a topic to the code that is no longer than 6 words and captures exactly what the code does. You can refer to the function names to find the topic name as well.
-2. Explain in brief exactly what the code does.
-3. List ALL logical errors.
-4. Show corrected versions, if any.
-5. Simulate execution for common inputs.
+1. Identify the algorithm or mathematical problem this code solves (e.g., factorial, Fibonacci, prime checking).
+2. Give a topic to the code that is no longer than 4 words and captures exactly what the code does. You can refer to the function names to find the topic name as well.
+3. Explain in brief exactly what the code does.
+4. List ALL logical errors.
+5. Show corrected versions, if any.
+6. Simulate execution for common inputs.
 
 CODE:
 {user_code}
@@ -196,12 +215,29 @@ CODE:
 
     # getting the topic name from the explanation
     def extract_topic(explanation):
-        match = re.search(r"Topic:\s*(.+)", explanation)
-        if match:
-            return match.group(1).strip()
+        if not explanation:
+            return None
+        
+        for line in explanation.splitlines():
+            if line.lower().startswith("topic"):
+                return line.split(":", 1)[-1].strip()
+
         return None
     
     extracted_topic = extract_topic(explanation)
+
+    if not extracted_topic:
+        category = "Miscellaneous"
+        matched_topic = "Unknown"
+        return render_template(
+            "index.html",
+            code=user_code,
+            explanation=explanation,
+            category=category,
+            topic=matched_topic,
+            valid_code=True
+        )
+
     
     # LLM tag generation - mainly used to search the KB for the optimal solution
     # kb_index.json contains the categories and the topics within those categories
@@ -209,30 +245,65 @@ CODE:
         KB = json.load(f)
 
 
-    SIM_THRESHOLD = 0.70
+    SIM_THRESHOLD = 0.75
+    STOP_WORDS = list(stopwords.words('english'))
+    STOP_WORDS.extend(["algorithm", "implementation", "function", "method", "class", "code", "using", "based", "approach", "solution"])
 
-    def match_topic_to_kb(topic_name, KB):
-        topic_doc = nlp(topic_name)
+    def normalize_text(text):
+        if not text:
+            return ""
+
+        doc = nlp(text.lower())
+        tokens = [
+            token.lemma_
+            for token in doc
+            if token.is_alpha and token.lemma_ not in STOP_WORDS
+        ]
+        tokens.sort()
+        return " ".join(tokens)
+
+    
+    normalized_kb = []  # list of dicts
+
+    for category, topic_list in KB.items():
+        for t in topic_list:
+            normalized_kb.append({
+                "category": category,
+                "raw": t,
+                "normalized": normalize_text(t)
+            })
+
+    def keyword_overlap(a, b):
+        return len(set(a.split()) & set(b.split()))
+
+
+    def match_topic_to_kb(topic_name, normalized_kb):
+        norm_topic = normalize_text(topic_name)
+
+        for entry in normalized_kb:
+            if norm_topic == entry["normalized"]:
+                return entry["category"], entry["raw"]
+
+        topic_doc = nlp(norm_topic)
         best_score = 0
-        best_topic = None
-        best_category = None
+        best_entry = None
 
-        for category, topic_list in KB.items():
-            for t in topic_list:
-                score = topic_doc.similarity(nlp(t))
-                if score > best_score:
-                    best_score = score
-                    best_topic = t
-                    best_category = category
+        for entry in normalized_kb:
+            kb_doc = nlp(entry["normalized"])
+            score = topic_doc.similarity(kb_doc)
 
-        # If similar enough → matched
-        if best_score >= SIM_THRESHOLD:
-            return best_category, best_topic
-        
-        # Else → miscellaneous
+            if score > best_score:
+                best_score = score
+                best_entry = entry
+
+        if best_entry and best_score >= SIM_THRESHOLD:
+            if keyword_overlap(norm_topic, best_entry["normalized"]) >= 1:
+                return best_entry["category"], best_entry["raw"]
+
+
         return "Miscellaneous", topic_name
 
-    category, matched_topic = match_topic_to_kb(extracted_topic, KB)
+    category, matched_topic = match_topic_to_kb(extracted_topic, normalized_kb)
 
     return render_template("index.html",
                            code=user_code,
@@ -243,6 +314,10 @@ CODE:
 
 
 
+
+
+
+# Code analysis route
 @app.route('/analyze', methods=['POST', 'GET'])
 def analyze_code():
     user_code = request.form.get('code', '').strip()
@@ -681,6 +756,9 @@ Remarks: {mi_remarks}
                            compare_available=True)
 
 
+
+
+
 # displaying the contents of KB
 # make the page URLs more readable
 def slugify(text):
@@ -689,10 +767,18 @@ def slugify(text):
     text = re.sub(r"[\s_]+", "-", text)
     return text.strip("-")
 
+
+
+
+
 # pretty name from filename
 def pretty_category_name(filename):
     name = os.path.splitext(filename)[0]
     return name.replace("_", " ").title()
+
+
+
+
 
 # List available category files
 def list_category_files():
@@ -705,6 +791,11 @@ def list_category_files():
         return []
     return files
 
+
+
+
+
+
 # Load full JSON array from a category file, return list of dict entries
 def load_category_entries(category_slug):
     filename = f"{category_slug}.json"
@@ -716,6 +807,10 @@ def load_category_entries(category_slug):
     # data is expected to be a list of objects
     return data
 
+
+
+
+
 # Find entry by topic slug
 def find_entry_by_topic(entries, topic_slug):
     for entry in entries:
@@ -723,6 +818,11 @@ def find_entry_by_topic(entries, topic_slug):
         if slugify(topic) == topic_slug:
             return entry
     return None
+
+
+
+
+
 
 @app.route("/kb")
 def kb_index():
@@ -734,6 +834,10 @@ def kb_index():
         } for fname in files
     ]
     return render_template("kb.html", categories=categories)
+
+
+
+
 
 @app.route("/kb/<category_slug>")
 def kb_category(category_slug):
@@ -758,6 +862,10 @@ def kb_category(category_slug):
     category_pretty = pretty_category_name(category_slug + ".json")
     return render_template("kb_topics.html", category_slug=category_slug,
                            category_pretty=category_pretty, topics=topics, q=q)
+
+
+
+
 
 @app.route("/kb/<category_slug>/<topic_slug>")
 def kb_detail(category_slug, topic_slug):
@@ -785,6 +893,10 @@ def kb_detail(category_slug, topic_slug):
                            metrics=metrics,
                            tags=tags,
                            topic_slug=topic_slug)
+
+
+
+
 
 @app.route("/compare")
 def compare_page():
@@ -905,6 +1017,10 @@ def compare_page():
         )
 
 
+
+
+
+
 @app.route("/report/<analysis_id>")
 def report_pages(analysis_id):
     report_path = os.path.join("analysis_report", f"{analysis_id}.json")
@@ -923,6 +1039,12 @@ def report_pages(analysis_id):
         "report.html",
         report=report
     )
+
+
+
+
+
+
 
 
 @app.route("/report/<analysis_id>/pdf", methods=["POST"])
@@ -980,14 +1102,14 @@ def download_report_pdf(analysis_id):
         elements.append(Paragraph(line.replace("&", "&amp;"), styles["Normal"]))
         elements.append(Spacer(1, 4))
 
-    doc.build(elements)
-    buffer.seek(0)
-
     if chart_image:
         image_data = chart_image.split(",")[1]
         image_bytes = base64.b64decode(image_data)
         img = Image(BytesIO(image_bytes), width=400, height=250)
         elements.append(img)
+
+    doc.build(elements)
+    buffer.seek(0)
 
     return send_file(
         buffer,

@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "analysis_id": "1184a455-3706-460b-bb1c-ae7280da4b2e",
+    "timestamp": "2026-02-08T07:13:02.723450",
+    "category": "Miscellaneous",
+    "topic": "Unknown"
+  },
+  "scores": {
+    "pylint_score": 5.0,
+    "complexity_score": 8.0,
+    "loc_score": 6.5,
+    "structural_score": 7.0,
+    "logic_score": 8.0,
+    "cyclomatic_score": 10.0,
+    "mi_score": 7.17,
+    "composite_score": 7.18
+  },
+  "raw_outputs": {
+    "pylint": "************* Module temp_code\ntemp_code.py:2:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)\ntemp_code.py:3:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)\ntemp_code.py:4:0: W0311: Bad indentation. Found 12 spaces, expected 8 (bad-indentation)\ntemp_code.py:5:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)\n\n-------------------------------------------------------------------\nYour code has been rated at 5.00/10 (previous run: 10.00/10, -5.00)",
+    "ast": [
+      "Variable `calculate_factorial_iterative` used before assignment (line 8).",
+      "Variable `i` used before assignment (line 4).",
+      "Variable `n` used before assignment (line 3)."
+    ],
+    "math_llm": "No mathematical issues found or the model returned an empty response.",
+    "complexity_llm": "```python\ntime_complexity: \"O(n)\",\nspace_complexity: \"O(1) excluding the output, O(n) including it\",\nexplanation: \"Time Complexity - The function iterates through a loop that runs 'n' times where each iteration involves constant-time operations (multiplication). Therefore, time complexity is linear with respect to input size.\", \"Space Complexity - No additional space grows with the increase in input; therefore it remains constant and does not include the output variable which has only one allocation of memory. Hence, effective space complexity can be considered as O(1), excluding considering allocated but unused variables that hold values during recursion or iteration.\"\nefficiency_score: 8\n```\n"
+  },
+  "final_report": "\nCODE ANALYSIS REPORT\n-----------------------------------------------\nLINES OF CODE: 8\nFunctions: 1\nClasses: 0\n\nScore: 6.5/10\n\n---------- STRUCTURAL ERRORS (AST) ----------\nVariable `calculate_factorial_iterative` used before assignment (line 8).\nVariable `i` used before assignment (line 4).\nVariable `n` used before assignment (line 3).\n\nScore: 7.0/10\n\n---------- PYLINT ----------\n************* Module temp_code\ntemp_code.py:2:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)\ntemp_code.py:3:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)\ntemp_code.py:4:0: W0311: Bad indentation. Found 12 spaces, expected 8 (bad-indentation)\ntemp_code.py:5:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)\n\n-------------------------------------------------------------------\nYour code has been rated at 5.00/10 (previous run: 10.00/10, -5.00)\n\nScore: 5.0/10\n\n---------- CYCLOMATIC COMPLEXITY ----------\nGrade: A\nScore: 2.0\nRemarks: CC Range (1-5): Very simple and clear.\n\n---------- MAINTAINABILITY INDEX ----------\nGrade: A\nScore: 71.69\nRemarks: MI Range (65-100): Highly maintainable \u2014 clean and simple\n\n---------- MATHEMATICAL / ALGORITHMIC ERRORS (LLM) ----------\nNo mathematical issues found or the model returned an empty response.\n\n---------- TIME/SPACE COMPLEXITY & READABILITY ----------\n```python\ntime_complexity: \"O(n)\",\nspace_complexity: \"O(1) excluding the output, O(n) including it\",\nexplanation: \"Time Complexity - The function iterates through a loop that runs 'n' times where each iteration involves constant-time operations (multiplication). Therefore, time complexity is linear with respect to input size.\", \"Space Complexity - No additional space grows with the increase in input; therefore it remains constant and does not include the output variable which has only one allocation of memory. Hence, effective space complexity can be considered as O(1), excluding considering allocated but unused variables that hold values during recursion or iteration.\"\nefficiency_score: 8\n```\n\n\n---------- COMPOSITE SCORE FOR YOUR CODE ----------\n7.18\n\n--------------------------------------------\n"
+}

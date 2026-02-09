@@ -1,0 +1,254 @@
+[
+  {
+    "category": "Linked List",
+    "topic": "Create a Linked List",
+    "variant": "class_based",
+    "description": "Truth table entry for Linked List creation",
+    "metrics": {
+      "loc": 6,
+      "functions": 2,
+      "classes": 2,
+      "pylint_score": 9.5,
+      "complexity_score": 9.5,
+      "loc_score": 9.5,
+      "structural_score": 9.5,
+      "logic_score": 9.0,
+      "math_score": 8.0,
+      "cyclomatic_complexity": 1,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 97,
+      "composite_score": 9.48
+    },
+    "complexity": {
+      "time": "O(1)",
+      "space": "O(1)"
+    },
+    "truth_table": [
+      {
+        "input": "empty list",
+        "expected": "head = None"
+      }
+    ]
+  },
+  {
+    "category": "Linked List",
+    "topic": "Insert a node",
+    "variant": "beginning_end_position",
+    "description": "Truth table entry for insertion operations",
+    "metrics": {
+      "loc": 18,
+      "functions": 3,
+      "classes": 0,
+      "pylint_score": 8.8,
+      "complexity_score": 7.5,
+      "loc_score": 8.0,
+      "structural_score": 8.5,
+      "logic_score": 9.0,
+      "math_score": 8.0,
+      "cyclomatic_complexity": 5,
+      "cyclomatic_score": 8.5,
+      "maintainability_index": 87,
+      "composite_score": 8.29
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "truth_table": [
+      {
+        "input": ["insert 10", "insert 20"],
+        "expected": "10 -> 20 -> None"
+      }
+    ]
+  },
+  {
+    "category": "Linked List",
+    "topic": "Delete a Node",
+    "variant": "by_value",
+    "description": "Truth table entry for node deletion",
+    "metrics": {
+      "loc": 9,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 9.0,
+      "complexity_score": 8.5,
+      "loc_score": 9.0,
+      "structural_score": 8.5,
+      "logic_score": 9.0,
+      "math_score": 8.0,
+      "cyclomatic_complexity": 4,
+      "cyclomatic_score": 9.0,
+      "maintainability_index": 90,
+      "composite_score": 8.73
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "truth_table": [
+      {
+        "input": "delete 20",
+        "expected": "10 -> 30 -> None"
+      }
+    ]
+  },
+  {
+    "category": "Linked List",
+    "topic": "Traverse / Display List",
+    "variant": "iterative",
+    "description": "Truth table entry for traversal",
+    "metrics": {
+      "loc": 5,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 9.8,
+      "complexity_score": 9.5,
+      "loc_score": 9.5,
+      "structural_score": 9.5,
+      "logic_score": 9.5,
+      "math_score": 8.0,
+      "cyclomatic_complexity": 2,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 98,
+      "composite_score": 9.61
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "truth_table": [
+      {
+        "input": "10 -> 20 -> None",
+        "expected": "prints all nodes"
+      }
+    ]
+  },
+  {
+    "category": "Linked List",
+    "topic": "Reverse a Linked List",
+    "variant": "iterative",
+    "description": "Truth table entry for reversing a linked list",
+    "metrics": {
+      "loc": 7,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 9.0,
+      "complexity_score": 8.5,
+      "loc_score": 9.0,
+      "structural_score": 9.0,
+      "logic_score": 9.5,
+      "math_score": 8.0,
+      "cyclomatic_complexity": 3,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 92,
+      "composite_score": 8.94
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "truth_table": [
+      {
+        "input": "10 -> 20 -> 30",
+        "expected": "30 -> 20 -> 10"
+      }
+    ]
+  },
+  {
+    "category": "Linked List",
+    "topic": "Detect Loop",
+    "variant": "floyd",
+    "description": "Truth table entry for loop detection",
+    "metrics": {
+      "loc": 7,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 8.5,
+      "complexity_score": 8.0,
+      "loc_score": 8.5,
+      "structural_score": 8.5,
+      "logic_score": 9.0,
+      "math_score": 8.0,
+      "cyclomatic_complexity": 4,
+      "cyclomatic_score": 9.0,
+      "maintainability_index": 89,
+      "composite_score": 8.49
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "truth_table": [
+      {
+        "input": "list with cycle",
+        "expected": true
+      },
+      {
+        "input": "linear list",
+        "expected": false
+      }
+    ]
+  },
+  {
+    "category": "Linked List",
+    "topic": "Find Middle Node",
+    "variant": "two_pointer",
+    "description": "Truth table entry for middle element",
+    "metrics": {
+      "loc": 6,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 9.2,
+      "complexity_score": 9.0,
+      "loc_score": 9.0,
+      "structural_score": 9.0,
+      "logic_score": 9.5,
+      "math_score": 8.0,
+      "cyclomatic_complexity": 3,
+      "cyclomatic_score": 10.0,
+      "maintainability_index": 94,
+      "composite_score": 9.05
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "truth_table": [
+      {
+        "input": "1 -> 2 -> 3 -> 4 -> 5",
+        "expected": 3
+      }
+    ]
+  },
+  {
+    "category": "Linked List",
+    "topic": "Merge Two Sorted Linked Lists",
+    "variant": "recursive",
+    "description": "Truth table entry for merging sorted lists",
+    "metrics": {
+      "loc": 9,
+      "functions": 1,
+      "classes": 0,
+      "pylint_score": 8.0,
+      "complexity_score": 7.0,
+      "loc_score": 8.0,
+      "structural_score": 8.0,
+      "logic_score": 9.0,
+      "math_score": 8.5,
+      "cyclomatic_complexity": 4,
+      "cyclomatic_score": 9.0,
+      "maintainability_index": 85,
+      "composite_score": 8.07
+    },
+    "complexity": {
+      "time": "O(n + m)",
+      "space": "O(n + m)"
+    },
+    "truth_table": [
+      {
+        "input": ["1 -> 3 -> 5", "2 -> 4 -> 6"],
+        "expected": "1 -> 2 -> 3 -> 4 -> 5 -> 6"
+      }
+    ]
+  }
+]
