@@ -10,7 +10,8 @@ Architecture Diagram
               ↓
       Hybrid Topic Matcher
               ↓
-Match Found -> Compare with KB → Store Report    
+Match Found: Compare with KB and Store Report 
+              ↓
             No Match
                ↓
 Clarification / Disambiguation Prompt
