@@ -1,23 +1,28 @@
 [
   {
-  "category": "Miscellaneous",
-  "topic": "Addition/Sum of Numbers",
-  "description": "Computes the sum of a variable number of numeric arguments.",
-  "optimal_code": {
-    "iterative": "def sum_numbers(*args):\n    total = 0\n    for num in args:\n        total += num\n    return total",
-    "recursive": "def sum_numbers_recursive(*args):\n    if not args:\n        return 0\n    return args[0] + sum_numbers_recursive(*args[1:])"
+    "category": "Miscellaneous",
+    "topic": "Addition/Sum of Numbers",
+    "description": "Computes the sum of a variable number of numeric arguments.",
+    "optimal_code": {
+      "iterative": "def sum_numbers(*args):\n    total = 0\n    for num in args:\n        total += num\n    return total",
+      "recursive": "def sum_numbers_recursive(*args):\n    if not args:\n        return 0\n    return args[0] + sum_numbers_recursive(*args[1:])"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1) for iteration / O(n) for recursion"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 2,
+      "lines_of_code": 6
+    },
+    "tags": [
+      "sum",
+      "varargs",
+      "numbers",
+      "recursion",
+      "iteration"
+    ]
   },
-  "complexity": {
-    "time": "O(n)",
-    "space": "O(1) for iteration / O(n) for recursion"
-  },
-  "metrics": {
-    "cyclomatic_complexity": 2,
-    "lines_of_code": 6
-  },
-  "tags": ["sum", "varargs", "numbers", "recursion", "iteration"]
-}
-,
   {
     "category": "Miscellaneous",
     "topic": "Sum of Subset",
@@ -33,7 +38,12 @@
       "cyclomatic_complexity": 4,
       "lines_of_code": 7
     },
-    "tags": ["recursion", "backtracking", "subset sum", "combinatorics"]
+    "tags": [
+      "recursion",
+      "backtracking",
+      "subset sum",
+      "combinatorics"
+    ]
   },
   {
     "category": "Miscellaneous",
@@ -50,7 +60,12 @@
       "cyclomatic_complexity": 3,
       "lines_of_code": 6
     },
-    "tags": ["recursion", "tower of hanoi", "divide and conquer", "puzzle"]
+    "tags": [
+      "recursion",
+      "tower of hanoi",
+      "divide and conquer",
+      "puzzle"
+    ]
   },
   {
     "category": "Miscellaneous",
@@ -67,6 +82,83 @@
       "cyclomatic_complexity": 4,
       "lines_of_code": 6
     },
-    "tags": ["recursion", "knapsack", "dynamic programming", "optimization"]
+    "tags": [
+      "recursion",
+      "knapsack",
+      "dynamic programming",
+      "optimization"
+    ]
+  },
+  {
+    "topic": "0/1 Knapsack DP",
+    "description": "Provisional KB entry generated from analysis.",
+    "optimal_code": {
+      "code": "def knapsack_01_dp(weights, values, capacity):\r\n    \"\"\"\r\n    Solves the 0/1 knapsack problem using dynamic programming.\r\n\r\n    :param weights: A list of weights of the items.\r\n    :param values: A list of values (profits) of the items.\r\n    :param capacity: The maximum weight capacity of the knapsack.\r\n    :return: The maximum value that can be obtained.\r\n    \"\"\"\r\n    n = len(values)\r\n    # Create a DP table with (n+1) rows and (capacity+1) columns, initialized to 0\r\n    # dp[i][w] will store the maximum value using first i items with capacity w\r\n    dp = [[0 for _ in range(capacity + 1)] for _ in range(n + 1)]\r\n\r\n    # Build the table in a bottom-up manner\r\n    for i in range(1, n + 1):\r\n        for w in range(1, capacity + 1):\r\n            # Get the weight and value of the current (i-1 index) item\r\n            current_weight = weights[i - 1]\r\n            current_value = values[i - 1]\r\n\r\n            # If the current item's weight is less than or equal to the current capacity 'w'\r\n            if current_weight <= w:\r\n                # Option 1: Include the item\r\n                # Value = current item's value + max value from remaining capacity (w - current_weight) using previous items (i-1)\r\n                include_item = current_value + dp[i - 1][w - current_weight]\r\n                # Option 2: Exclude the item\r\n                # Value = max value using previous items (i-1) with the same capacity 'w'\r\n                exclude_item = dp[i - 1][w]\r\n                # Take the maximum of the two options\r\n                dp[i][w] = max(include_item, exclude_item)\r\n            else:\r\n                # If the item cannot fit, the value is the same as the value without including it\r\n                dp[i][w] = dp[i - 1][w]\r\n\r\n    # The result is stored in the bottom-right cell of the table\r\n    return dp[n][capacity]\r\n\r\n# Example Usage:\r\nif __name__ == \"__main__\":\r\n    values = [60, 100, 120]\r\n    weights = [10, 20, 30]\r\n    capacity = 50\r\n    \r\n    max_value = knapsack_01_dp(weights, values, capacity)\r\n    print(f\"Maximum value in knapsack: {max_value}\") # Output: 220 (by taking items with weights 10 and 20)\r\n    \r\n    values2 = [1, 3, 4, 5]\r\n    weights2 = [1, 4, 5, 7]\r\n    capacity2 = 7\r\n    \r\n    max_value2 = knapsack_01_dp(weights2, values2, capacity2)\r\n    print(f\"Maximum value in knapsack: {max_value2}\") # Output: 9 (by taking items with weights 3 and 4)"
+    },
+    "metrics": {
+      "pylint_score": 8.75,
+      "complexity_score": 7.0,
+      "loc_score": 10.0,
+      "structural_score": 0.0,
+      "logic_score": 4.0,
+      "cyclomatic_score": 8.0,
+      "mi_score": 8.02,
+      "composite_score": 6.44
+    },
+    "tags": [],
+    "provisional": false,
+    "source_analysis_id": "07ecfca7-91b7-475b-bb16-394031edde4e",
+    "created_at": "2026-02-10T12:16:59.524870"
+  },
+  {
+    "category": "Miscellaneous",
+    "topic": "Addition/Sum of Numbers",
+    "description": "Function that adds two numbers.",
+    "optimal_code": {
+      "reference": "Here is the optimal code for the given topic:\n\n```python\ndef add(a, b):\n    return a + b\n\nadd(5, 7)\n```\n\nIn this code, I've changed the function name from `sum()` to `add()`, since Python has a built-in function named `sum()`. Using a different function name prevents any conflicts and makes the code more readable."
+    },
+    "metrics": {
+      "pylint_score": 3.33,
+      "complexity_score": 10.0,
+      "loc_score": 4.0,
+      "structural_score": 8.0,
+      "logic_score": 4.0,
+      "cyclomatic_score": 10.0,
+      "mi_score": 8.47,
+      "composite_score": 6.06
+    },
+    "tags": [
+      "addition",
+      "numbers",
+      "function",
+      "sum"
+    ],
+    "source_analysis_id": "b5cc6436-1609-4ad5-87e1-296c9c00c739",
+    "created_at": "2026-02-11T02:08:20.592625"
+  },
+  {
+    "category": "Miscellaneous",
+    "topic": "Perfect Number Checker",
+    "description": "Function to check if a given number is perfect by summing up all its divisors and comparing with the original number.",
+    "optimal_code": {
+      "reference": "Here's the optimal Python code for checking a perfect number. The improvement is in calculating divisors using a method called \"Sieve of Eratosthenes\". This method is more efficient as it avoids unnecessary calculations when finding factors.\n\n```python\ndef primes(limit):\n    sieve = [True] * limit\n    sieve[0] = False\n    sieve[1] = False\n\n    for i in range(2, int(limit ** 0.5) + 1):\n        if sieve[i]:\n            for j in range(i*i, limit, i):\n                sieve[j] = False\n\n    return [x for x in range(2, limit) if sieve[x]]\n\ndef is_perfect(n):\n    primes_list = primes(n)\n    total = sum([x for x in primes_list if n % x == 0])\n    return total == n\n\nprint(is_perfect(28))  # True\n```\n\nThis code creates a list of prime numbers up to the given number `n`, calculates their sum, and checks if it equals `n`. If so, it returns `True`, meaning the input is a perfect number."
+    },
+    "metrics": {
+      "lines_of_code": 9,
+      "cyclomatic_complexity": 4.0
+    },
+    "tags": [
+      "Perfect Number",
+      "Algorithm",
+      "Mathematics",
+      "Divisor",
+      "Summation"
+    ],
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "source_analysis_id": "2ca7754a-54fa-4548-aee9-a606937253f1",
+    "created_at": "2026-02-11T11:22:31.775956"
   }
 ]

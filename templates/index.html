@@ -8,20 +8,20 @@
   <style>
     body {
       background-color: #121212;
-      color: #f5f5f5;
+      color: #ffffff;
       min-height: 100vh;
     }
     textarea {
       font-family: monospace;
       height: 400px;
       background-color: #1e1e1e;
-      color: #f5f5f5;
+      color: #ffffff;
       border: none;
       resize: vertical;
     }
     pre {
       background: #1e1e1e;
-      color: #e5e5e5;
+      color: #ffffff;
       padding: 1rem;
       border-radius: 8px;
       white-space: pre-wrap;
@@ -31,6 +31,11 @@
       background-color: #1a1a1a;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    }
+    .card-content,
+    .card-content .content,
+    .card-content p {
+      color: #ffffff;
     }
     .card-header {
       background-color: #00d1b2;
@@ -61,7 +66,7 @@
   <section class="section">
     <div class="container">
       <h1 class="title has-text-centered has-text-primary-light">Python Code Explainer & Analyzer</h1>
-      <p class="subtitle has-text-centered has-text-grey-light">Understand your code and check its quality instantly.</p>
+      <p class="subtitle has-text-centered" style="color:#ffffff;">Understand your code and check its quality instantly.</p>
 
       <div class="box" style="background-color:#1a1a1a;">
         <form action="/explain" method="post" enctype="multipart/form-data">
@@ -86,6 +91,9 @@
             <a href="/kb">
                 <button type="button" class="button is-primary is-medium">Knowledge Base</button>
             </a>
+            <a href="/">
+                <button type="button" class="button is-light is-medium" style="margin-left:8px;">Home</button>
+            </a>
           </div>
         </form>
       </div>
@@ -99,12 +107,20 @@
           {% if category and topic %}
           <div class="tags has-addons mb-3">
             <span class="tag is-medium is-info">Category</span>
-            <span class="tag is-medium is-light">{{ category }}</span>
+            <span class="tag is-medium is-dark">{{ category }}</span>
           </div>
           <div class="tags has-addons mb-4">
             <span class="tag is-medium is-success">Topic</span>
-            <span class="tag is-medium is-light">{{ topic }}</span>
+            <span class="tag is-medium is-dark">{{ topic }}</span>
           </div>
+          {% if tags %}
+          <div class="mb-3">
+            <span class="tag is-medium is-info">Tags</span>
+            {% for t in tags %}
+              <span class="tag is-medium is-light">{{ t }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
           {% endif %}
 
           <div class="content">
@@ -122,6 +138,7 @@
           <input type="hidden" name="code" value="{{ code }}">
           <input type="hidden" name="category" value="{{ category }}">
           <input type="hidden" name="topic" value="{{ topic }}">
+          <input type="hidden" name="tags" value="{{ tags | join(', ') if tags else '' }}">
 
           <div class="field has-text-centered mt-3">
               <button class="button is-primary is-medium">Analyze Code</button>
@@ -142,11 +159,68 @@
       {% endif %}
       {% if analysis %}
       <div class="field has-text-centered mt-4">
+          {% if provisional_entry %}
+          <button class="button is-primary is-medium" disabled title="No optimal in KB — save this code to KB first to compare later.">
+              Compare with Optimal Code
+          </button>
+          {% else %}
           <a href="/compare">
               <button class="button is-primary is-medium">
                   Compare with Optimal Code
               </button>
           </a>
+          {% endif %}
+          {% if analysis_id %}
+          <a href="/report/{{ analysis_id }}" class="button is-primary is-medium is-outlined" style="margin-left: 0.5rem;">
+              View Full Report
+          </a>
+          {% endif %}
+      </div>
+      {% endif %}
+
+      {% if provisional_entry and analysis_id %}
+      <div class="card mt-5">
+        <header class="card-header has-background-warning">
+          <p class="card-header-title">Save to Knowledge Base</p>
+        </header>
+        <div class="card-content">
+          <p class="mb-4" style="color:#ffffff;">This topic is not in the KB yet. Save it to store the topic, category, LLM-generated optimal code, and all analysis metrics.</p>
+          <form action="/provisional/confirm" method="post">
+            <input type="hidden" name="analysis_id" value="{{ analysis_id }}">
+            <div class="field">
+              <label class="label">Category</label>
+              <div class="control">
+                <input class="input" type="text" name="category" value="{{ provisional_entry.get('category', '') or '' }}" placeholder="e.g., Basic Python">
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Topic</label>
+              <div class="control">
+                <input class="input" type="text" name="topic" value="{{ provisional_entry.get('topic', '') }}">
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Description</label>
+              <div class="control">
+                <textarea class="textarea" name="description">{{ provisional_entry.get('description', '') }}</textarea>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Tags (comma-separated)</label>
+              <div class="control">
+                <input class="input" type="text" name="tags" value="{{ provisional_entry.get('tags') | join(', ') }}">
+              </div>
+            </div>
+
+            <div class="field has-text-centered mt-3">
+              <button class="button is-success" name="action" value="confirm">Confirm & Save to KB</button>
+              <button class="button is-danger" name="action" value="discard">Discard</button>
+            </div>
+          </form>
+        </div>
       </div>
       {% endif %}
 

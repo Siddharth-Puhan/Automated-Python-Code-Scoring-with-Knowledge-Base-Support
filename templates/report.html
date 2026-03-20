@@ -5,6 +5,11 @@
     <title>Full Analysis Report</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background:#121212; color:#ffffff; min-height:100vh; }
+        .box, .card { background:#1a1a1a; }
+        .subtitle, p, li, td, th { color:#ffffff !important; }
+    </style>
 </head>
 <body>
 <section class="section">
@@ -35,6 +40,7 @@
         <li>Maintainability Index: {{ report.scores.mi_score }}</li>
     </ul>
 
+    {% if report.comparison %}
     <hr>
     <h2 class="title is-4">Score Comparison</h2>
     <canvas id="scoreChart"></canvas>
@@ -42,6 +48,7 @@
     <script>
     window.comparison = {{ report.comparison | tojson | safe }};
 
+    if (window.comparison && window.comparison.user_scores) {
     const labels = Object.keys(window.comparison.user_scores);
     const userScores = Object.values(window.comparison.user_scores);
     const optimalScores = Object.values(window.comparison.optimal_scores);
@@ -66,14 +73,15 @@
     });
 
     setTimeout(() => {
-        const img = ctx.toDataURL("image/png");
-        document.getElementById("chartImage").value = img;
+        const canvas = document.getElementById("scoreChart");
+        if (canvas) {
+            const img = canvas.toDataURL("image/png");
+            document.querySelectorAll('input[name="chart_image"]').forEach(i => i.value = img);
+        }
     }, 500);
+    }
     </script>
 
-    <input type="hidden" id="chartImage" name="chart_image">
-
-    {% if report.comparison %}
     <table class="table is-fullwidth is-bordered is-striped">
     <thead>
         <tr>
@@ -99,19 +107,45 @@
     <hr>
 
     <h2 class="subtitle">Full Detailed Report</h2>
-    <pre style="padding:1rem;">
+    <pre style="padding:1rem; background:#1e1e1e; color:#ffffff; border-radius:8px;">
 {{ report.final_report }}
     </pre>
 
-    <form method="POST" action="/report/{{ report.meta.analysis_id }}/pdf">
+    {% if optimal_code %}
+    <hr>
+    <h2 class="subtitle">Optimal Python Code from Knowledge Base</h2>
+    <pre style="padding:1rem; background:#1e1e1e; color:#ffffff; border-radius:8px; white-space:pre-wrap; word-wrap:break-word; font-family:monospace;">{{ optimal_code }}</pre>
+    {% endif %}
+
+    <form id="downloadPdfForm" method="POST" action="/report/{{ report.meta.analysis_id }}/pdf">
     <input type="hidden" id="chartImage" name="chart_image">
-    
     <div class="has-text-centered mt-5">
         <button type="submit" class="button is-primary is-outlined">
         Download PDF
         </button>
     </div>
     </form>
+
+    <script>
+    // Ensure chart image is set before submitting (handles fast clicks)
+    (function(){
+        const form = document.getElementById('downloadPdfForm');
+        if (!form) return;
+        form.addEventListener('submit', function(e){
+            e.preventDefault();
+            try{
+                const canvas = document.getElementById('scoreChart');
+                if (canvas) {
+                    const img = canvas.toDataURL('image/png');
+                    document.getElementById('chartImage').value = img;
+                }
+            }catch(err){
+                // ignore and submit without image
+            }
+            form.submit();
+        });
+    })();
+    </script>
 
 
     <div class="has-text-centered mt-5">

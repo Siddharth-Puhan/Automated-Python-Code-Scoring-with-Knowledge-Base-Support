@@ -129,7 +129,7 @@
   },
   {
     "category": "Graph",
-    "topic": "Detect cycle",
+    "topic": "Detect cycle (DFS-based)",
     "variant": "dfs",
     "description": "Truth table entry for cycle detection in graph",
     "metrics": {
@@ -195,7 +195,7 @@
   },
   {
     "category": "Graph",
-    "topic": "Shortest path (Dijkstra)",
+    "topic": "Shortest path (basic Dijkstra)",
     "variant": "priority_queue",
     "description": "Truth table entry for Dijkstra shortest path",
     "metrics": {

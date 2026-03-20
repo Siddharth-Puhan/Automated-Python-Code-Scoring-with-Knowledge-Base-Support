@@ -4,7 +4,7 @@ from os import abort
 import ast, uuid, base64
 from datetime import datetime
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Preformatted
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 from flask import send_file
@@ -28,6 +28,276 @@ TRUTH_DIR = os.path.join(os.path.dirname(__file__), "Truth_tables")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# ----------------------------
+# Topic matching configuration
+# ----------------------------
+
+SIM_THRESHOLD = 0.75
+STOP_WORDS = list(stopwords.words("english"))
+STOP_WORDS.extend(
+    [
+        "algorithm",
+        "implementation",
+        "function",
+        "method",
+        "class",
+        "code",
+        "using",
+        "based",
+        "approach",
+        "solution",
+    ]
+)
+
+
+def normalize_text(text: str) -> str:
+    """Normalize text for robust similarity comparison."""
+    if not text:
+        return ""
+
+    doc = nlp(text.lower())
+    tokens = [
+        token.lemma_
+        for token in doc
+        if token.is_alpha and token.lemma_ not in STOP_WORDS
+    ]
+    tokens.sort()
+    return " ".join(tokens)
+
+
+def build_normalized_kb():
+    """
+    Build a normalized KB view directly from the JSON files in `Knowledge_base`
+    plus any extra topics listed in `kb_index.json`.
+
+    Returns a list of dicts, each containing:
+      - category
+      - topic
+      - normalized_topic
+      - tags
+      - description
+      - source_file
+      - doc (spaCy Doc of topic + tags for fast similarity)
+    """
+    entries = []
+    seen = set()
+
+    # 1) Load from per-category JSON files (source of truth for "programs in KB")
+    try:
+        for fname in os.listdir(KB_DIR):
+            if not fname.endswith(".json"):
+                continue
+            path = os.path.join(KB_DIR, fname)
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+            except Exception as e:
+                logger.exception("Failed to load KB file %s: %s", path, e)
+                continue
+
+            if not isinstance(data, list):
+                continue
+
+            default_category = os.path.splitext(fname)[0].replace("_", " ").title()
+
+            for item in data:
+                topic = item.get("topic")
+                if not topic:
+                    continue
+
+                category = item.get("category") or default_category
+                key = (category.strip().lower(), topic.strip().lower())
+                if key in seen:
+                    continue
+                seen.add(key)
+
+                tags = item.get("tags", []) or []
+                description = item.get("description", "") or ""
+
+                topic_text = topic
+                if tags:
+                    topic_text = f"{topic} " + " ".join(tags)
+
+                try:
+                    doc = nlp(topic_text.lower())
+                except Exception:
+                    doc = nlp(" ")
+
+                entries.append(
+                    {
+                        "category": category,
+                        "topic": topic,
+                        "normalized_topic": normalize_text(topic),
+                        "tags": tags,
+                        "description": description,
+                        "source_file": fname,
+                        "doc": doc,
+                    }
+                )
+    except FileNotFoundError:
+        logger.warning("Knowledge_base directory not found at %s", KB_DIR)
+
+    # 2) Augment with kb_index.json (acts as additional aliases / coarse topics)
+    try:
+        with open("kb_index.json", "r", encoding="utf-8") as f:
+            kb_index = json.load(f)
+        if isinstance(kb_index, dict):
+            for category, topics in kb_index.items():
+                for topic in topics:
+                    key = (category.strip().lower(), topic.strip().lower())
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    try:
+                        doc = nlp(topic.lower())
+                    except Exception:
+                        doc = nlp(" ")
+                    entries.append(
+                        {
+                            "category": category,
+                            "topic": topic,
+                            "normalized_topic": normalize_text(topic),
+                            "tags": [],
+                            "description": "",
+                            "source_file": "kb_index.json",
+                            "doc": doc,
+                        }
+                    )
+    except FileNotFoundError:
+        # kb_index.json is optional for runtime, but tests and docs mention it.
+        logger.warning("kb_index.json not found; using only Knowledge_base files.")
+    except Exception as e:
+        logger.exception("Failed to load kb_index.json: %s", e)
+
+    return entries
+
+
+def _keyword_overlap(a: str, b: str) -> int:
+    return len(set(a.split()) & set(b.split()))
+
+
+def match_topic_to_kb_enhanced(topic_name, code_snippet, normalized_kb=None):
+    """
+    Enhanced topic matcher used by both the app and tests.
+
+    Returns:
+        category, topic, best_score, candidates, tags, description
+    where:
+        - candidates is a list of (category, topic, score) sorted by score desc.
+    """
+    if not topic_name:
+        return "Miscellaneous", "Unknown", 0.0, [], [], ""
+
+    if normalized_kb is None:
+        normalized_kb = build_normalized_kb()
+
+    norm_topic = normalize_text(topic_name)
+    if not norm_topic:
+        return "Miscellaneous", topic_name, 0.0, [], [], ""
+
+    # 1) Direct / substring matches against topic text
+    lowered_raw = topic_name.lower()
+    direct_matches = []
+    for entry in normalized_kb:
+        entry_norm = entry.get("normalized_topic", "")
+        raw = entry.get("topic", "") or ""
+        if not entry_norm:
+            continue
+
+        if (
+            norm_topic == entry_norm
+            or entry_norm in norm_topic
+            or norm_topic in entry_norm
+            or raw.lower() in lowered_raw
+            or lowered_raw in raw.lower()
+        ):
+            direct_matches.append(entry)
+
+    if direct_matches:
+        # If multiple, pick the one whose category/topic pair appears in the KB
+        # (normalized_kb is already built from actual files first, so this is safe).
+        best = direct_matches[0]
+        return (
+            best["category"],
+            best["topic"],
+            1.0,
+            [
+                (e["category"], e["topic"], 1.0)
+                for e in direct_matches
+            ],
+            best.get("tags", []),
+            best.get("description", ""),
+        )
+
+    # 2) Semantic similarity via spaCy embeddings
+    try:
+        topic_doc = nlp(norm_topic)
+    except Exception:
+        topic_doc = nlp(" ")
+
+    best_score = 0.0
+    best_entry = None
+    candidates = []
+
+    for entry in normalized_kb:
+        kb_doc = entry.get("doc")
+        if kb_doc is None:
+            continue
+        try:
+            score = topic_doc.similarity(kb_doc)
+        except Exception:
+            score = 0.0
+
+        candidates.append((entry["category"], entry["topic"], score))
+
+        if score > best_score:
+            best_score = score
+            best_entry = entry
+
+    candidates.sort(key=lambda x: x[2], reverse=True)
+
+    if best_entry:
+        kw_ov = _keyword_overlap(
+            norm_topic, best_entry.get("normalized_topic", "")
+        )
+        # accept when high semantic sim + keyword overlap, or moderate sim with keyword overlap
+        if (best_score >= SIM_THRESHOLD and kw_ov >= 1) or (
+            kw_ov >= 1 and best_score >= 0.55
+        ):
+            return (
+                best_entry["category"],
+                best_entry["topic"],
+                best_score,
+                candidates,
+                best_entry.get("tags", []),
+                best_entry.get("description", ""),
+            )
+
+        # fallback to spaCy-only high similarity
+        if best_score >= 0.7:
+            return (
+                best_entry["category"],
+                best_entry["topic"],
+                best_score,
+                candidates,
+                best_entry.get("tags", []),
+                best_entry.get("description", ""),
+            )
+
+    # Final fallback: Miscellaneous with original topic string
+    return "Miscellaneous", topic_name, best_score, candidates, [], ""
+
+
+def match_topic_to_kb(topic_name, normalized_kb=None):
+    """
+    Backwards-compatible wrapper that returns only (category, topic),
+    used by the Flask route. Tests should use match_topic_to_kb_enhanced.
+    """
+    category, topic, _, _, _, _ = match_topic_to_kb_enhanced(
+        topic_name, code_snippet=None, normalized_kb=normalized_kb
+    )
+    return category, topic
 
 def load_analysis_from_disk(analysis_id):
     if not analysis_id: return None
@@ -180,12 +450,11 @@ def explain_code():
 You are a strict Python reviewer.
 Find logical issues and explain EXACTLY what the code does.
 
-1. Identify the algorithm or mathematical problem this code solves (e.g., factorial, Fibonacci, prime checking).
-2. Give a topic to the code that is no longer than 4 words and captures exactly what the code does. You can refer to the function names to find the topic name as well.
-3. Explain in brief exactly what the code does.
-4. List ALL logical errors.
-5. Show corrected versions, if any.
-6. Simulate execution for common inputs.
+1. Topic: Give a topic to the code that is no longer than 4 words and captures exactly what the code does. You can refer to the function names to find the topic name as well or Identify the algorithm or mathematical problem this code solves (e.g., factorial, Fibonacci, prime checking).
+2. Explain in brief exactly what the code does.
+3. List ALL logical errors.
+4. Show corrected versions, if any.
+4. Simulate execution for common inputs.
 
 CODE:
 {user_code}
@@ -196,10 +465,18 @@ CODE:
 
     try:
         response = requests.post("http://localhost:11434/api/generate",
-                                 json=payload, stream=True)
-    except:
+                                 json=payload, stream=True, timeout=120)
+    except requests.exceptions.ConnectionError:
         return render_template("index.html",
-                               explanation="Ollama is not running.",
+                               explanation="Ollama is not running or unreachable. Start Ollama (e.g. ollama run mistral) and try again.",
+                               valid_code=False)
+    except requests.exceptions.Timeout:
+        return render_template("index.html",
+                               explanation="Ollama took too long to respond. Try again or check if the model is loaded.",
+                               valid_code=False)
+    except Exception as e:
+        return render_template("index.html",
+                               explanation=f"Could not reach Ollama: {e}. Start the Ollama service and try again.",
                                valid_code=False)
 
     for raw in response.iter_lines():
@@ -218,12 +495,40 @@ CODE:
 
     # getting the topic name from the explanation
     def extract_topic(explanation):
+        """
+        Extract a short topic string from the LLM explanation.
+
+        The LLM already produces good topic names; the main issue is
+        parsing. This function focuses purely on robust text extraction
+        instead of over-complicated logic.
+        """
         if not explanation:
             return None
-        
-        for line in explanation.splitlines():
-            if line.lower().startswith("topic"):
-                return line.split(":", 1)[-1].strip()
+
+        lines = explanation.splitlines()
+
+        # 1) Look for explicit "Topic: ..." / "1. Topic: ..." style lines
+        topic_patterns = [
+            r"^\s*(?:\d+[\.\)]\s*)?(?:topic|title)\s*[:\-]\s*(.+)$",
+            r"^\s*topic\s*name\s*[:\-]\s*(.+)$",
+        ]
+
+        for line in lines:
+            for pat in topic_patterns:
+                m = re.match(pat, line, flags=re.IGNORECASE)
+                if m:
+                    candidate = m.group(1).strip().strip("-").strip()
+                    if candidate:
+                        return candidate
+
+        # 2) Fallback: look for a short standalone line near the top that
+        # looks like a concise title (no punctuation, few words).
+        for line in lines[:10]:
+            text = line.strip()
+            if not text:
+                continue
+            if len(text.split()) <= 6 and all(ch.isalnum() or ch.isspace() for ch in text):
+                return text
 
         return None
     
@@ -241,9 +546,9 @@ CODE:
             valid_code=True
         )
 
-    from hard_overrides import match_hard_override
+    from hard_overrides import detect_hard_override
 
-    override_result = match_hard_override(user_code)
+    override_result = detect_hard_override(user_code)
 
     if override_result:
         return render_template(
@@ -255,72 +560,13 @@ CODE:
             valid_code=True
         )
     
+    # Build normalized KB from actual Knowledge_base files (+ kb_index aliases)
+    normalized_kb = build_normalized_kb()
 
-    # LLM tag generation - mainly used to search the KB for the optimal solution
-    # kb_index.json contains the categories and the topics within those categories
-    with open("kb_index.json") as f:
-        KB = json.load(f)
-
-
-    SIM_THRESHOLD = 0.75
-    STOP_WORDS = list(stopwords.words('english'))
-    STOP_WORDS.extend(["algorithm", "implementation", "function", "method", "class", "code", "using", "based", "approach", "solution"])
-
-    def normalize_text(text):
-        if not text:
-            return ""
-
-        doc = nlp(text.lower())
-        tokens = [
-            token.lemma_
-            for token in doc
-            if token.is_alpha and token.lemma_ not in STOP_WORDS
-        ]
-        tokens.sort()
-        return " ".join(tokens)
-
-    
-    normalized_kb = []  # list of dicts
-
-    for category, topic_list in KB.items():
-        for t in topic_list:
-            normalized_kb.append({
-                "category": category,
-                "raw": t,
-                "normalized": normalize_text(t)
-            })
-
-    def keyword_overlap(a, b):
-        return len(set(a.split()) & set(b.split()))
-
-
-    def match_topic_to_kb(topic_name, normalized_kb):
-        norm_topic = normalize_text(topic_name)
-
-        for entry in normalized_kb:
-            if norm_topic == entry["normalized"]:
-                return entry["category"], entry["raw"]
-
-        topic_doc = nlp(norm_topic)
-        best_score = 0
-        best_entry = None
-
-        for entry in normalized_kb:
-            kb_doc = nlp(entry["normalized"])
-            score = topic_doc.similarity(kb_doc)
-
-            if score > best_score:
-                best_score = score
-                best_entry = entry
-
-        if best_entry and best_score >= SIM_THRESHOLD:
-            if keyword_overlap(norm_topic, best_entry["normalized"]) >= 1:
-                return best_entry["category"], best_entry["raw"]
-
-
-        return "Miscellaneous", topic_name
-
-    category, matched_topic = match_topic_to_kb(extracted_topic, normalized_kb)
+    # Use enhanced matcher so that every KB program/topic is reachable
+    category, matched_topic, _, _, _, _ = match_topic_to_kb_enhanced(
+        extracted_topic, user_code, normalized_kb=normalized_kb
+    )
 
     return render_template("index.html",
                            code=user_code,
@@ -476,8 +722,12 @@ def analyze_code():
             math_feedback = "No mathematical issues found or the model returned an empty response."
 
 
+    except requests.exceptions.ConnectionError:
+        math_feedback = "Ollama is not running or unreachable. Start the Ollama service (e.g. ollama run deepseek-r1:1.5b) and try again."
+    except requests.exceptions.Timeout:
+        math_feedback = "Ollama took too long to respond. Mathematical analysis skipped."
     except Exception as e:
-        math_feedback = f"Mathematical analysis LLM unavailable: {e}"
+        math_feedback = f"Could not reach Ollama for math analysis: {e}. Start the Ollama service and try again."
 
 
     # calculating the logic score using deepseek's response as input to phi3
@@ -514,8 +764,12 @@ def analyze_code():
                     except json.JSONDecodeError:
                         continue
 
+    except requests.exceptions.ConnectionError:
+        logic_response = "Logic Scoring Failed: Ollama is not running or unreachable. Start the Ollama service and try again."
+    except requests.exceptions.Timeout:
+        logic_response = "Logic Scoring Failed: Ollama took too long to respond."
     except Exception as e:
-        logic_response = f"Logic Scoring Failed: {e}"
+        logic_response = f"Logic Scoring Failed: {e}. Start the Ollama service and try again."
     
     logic_response = logic_response.strip()
     match = re.search(r"logic_score:\s*(\d+)", logic_response)
@@ -569,8 +823,12 @@ def analyze_code():
                 except:
                     pass
 
-    except:
-        llm_feedback = "Complexity LLM unavailable."
+    except requests.exceptions.ConnectionError:
+        llm_feedback = "Ollama is not running or unreachable. Start the Ollama service and try again. Complexity analysis skipped."
+    except requests.exceptions.Timeout:
+        llm_feedback = "Ollama took too long to respond. Complexity analysis skipped."
+    except Exception as e:
+        llm_feedback = f"Could not reach Ollama for complexity analysis: {e}. Start the Ollama service and try again."
 
     match = re.search(r"efficiency_score:\s*(\d+)", llm_feedback)
     complexity_score = int(match.group(1)) if match else 0
@@ -653,14 +911,14 @@ def analyze_code():
 
     cyclomatic_score = map_cc_to_score(cc_score)
     composite_score = (
-        float(pylint_score)*0.25 + 
-        float(complexity_score)*0.25 + 
+        float(pylint_score)*0.15 + 
+        float(complexity_score)*0.4 + 
         float(loc_score)*0.05 + 
         float(structural_score)*0.05 + 
-        float(logic_score)*0.3 + 
-        float(cyclomatic_score)*0.05 + 
+        float(logic_score)*0.2 + 
+        float(cyclomatic_score)*0.1 + 
         (mi_score/10)*0.05
-        )
+    )
     composite_score = round(composite_score, 2)
 
     # ---------- Final Report ----------
@@ -713,7 +971,8 @@ Remarks: {mi_remarks}
         "analysis_id": analysis_id,
         "timestamp": datetime.utcnow().isoformat(),
         "category": category,
-        "topic": topic
+        "topic": topic,
+        "user_code": code or user_code
     },
     "scores": {
         "pylint_score": round(float(pylint_score), 2),
@@ -723,7 +982,10 @@ Remarks: {mi_remarks}
         "logic_score": round(float(logic_score), 2),
         "cyclomatic_score": round(float(cyclomatic_score), 2),
         "mi_score": round(float(mi_score / 10), 2),
-        "composite_score": composite_score
+        "composite_score": composite_score,
+        "lines_of_code": loc,
+        "cyclomatic_complexity": round(float(cc_score), 2),
+        "maintainability_index": round(float(mi_score), 2),
     },
     "raw_outputs": {
         "pylint": pylint_result.strip(),
@@ -765,15 +1027,333 @@ Remarks: {mi_remarks}
     except:
         pass
 
-    # Pass a flag so index.html can enable the Compare button
+    # When topic is not in KB, offer to save to KB; otherwise Compare is available
+    provisional_entry = None
+    if topic and topic.strip() != "Unknown" and not topic_exists_in_kb(category, topic):
+        description, tags = _get_description_and_tags_from_llm(topic, code or user_code)
+        provisional_entry = {
+            "category": category,
+            "topic": topic,
+            "description": description,
+            "tags": tags,
+        }
+
     return render_template("index.html",
                            code=user_code,
                            analysis=combined,
                            valid_code=True,
-                           compare_available=True)
+                           compare_available=True,
+                           provisional_entry=provisional_entry,
+                           analysis_id=analysis_id)
 
 
 
+
+
+# ---------- Provisional KB (save unknown code to KB) ----------
+def category_to_kb_filename(category):
+    """Map category name to Knowledge_base JSON filename."""
+    if not category:
+        return "miscellaneous.json"
+    return category.lower().replace(" ", "_").replace("-", "_") + ".json"
+
+
+def normalize_topic(topic):
+    """Normalize topic for comparison: strip, lower, collapse spaces."""
+    if not topic:
+        return ""
+    return re.sub(r"\s+", " ", (topic or "").strip().lower()).strip()
+
+
+def topic_exists_in_kb(category, topic):
+    """Return True if an entry with this topic exists in the KB for the given category."""
+    if not topic or not topic.strip() or topic.strip().lower() == "unknown":
+        return False
+    filename = category_to_kb_filename(category)
+    path = os.path.join(KB_DIR, filename)
+    if not os.path.exists(path):
+        return False
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception:
+        return False
+    if not isinstance(data, list):
+        data = [data] if data else []
+    topic_norm = normalize_topic(topic)
+    for entry in data:
+        t = entry.get("topic") or ""
+        if normalize_topic(t) == topic_norm:
+            return True
+    return False
+
+
+def _cc_to_score(cc_value):
+    """Map raw cyclomatic complexity to a 1–10 score (for compare when using KB entry)."""
+    try:
+        v = float(cc_value)
+    except (TypeError, ValueError):
+        return 0
+    if 1 <= v <= 3: return 10
+    if 4 <= v <= 5: return 9
+    if 6 <= v <= 8: return 8
+    if 9 <= v <= 10: return 7
+    if 11 <= v <= 15: return 6
+    if 16 <= v <= 20: return 5
+    if 21 <= v <= 30: return 4
+    return 3
+
+
+def _get_description_and_tags_from_llm(topic, user_code):
+    """Ask LLM for a short description and a few tags for the topic/code. Returns (description, tags_list)."""
+    prompt = f"""You are a Python documentation expert. For the following code and topic, provide:
+1. A single short description sentence (one line, no bullet).
+2. Exactly 3-5 tags (single words or short phrases, comma-separated), e.g. math, recursion, number.
+
+Topic: {topic}
+
+Code:
+{user_code or 'N/A'}
+
+Respond in this exact format only (no other text):
+DESCRIPTION: <one sentence>
+TAGS: <tag1>, <tag2>, <tag3>, ...
+"""
+    try:
+        resp = requests.post(
+            "http://localhost:11434/api/generate",
+            json={"model": "mistral", "prompt": prompt, "stream": False},
+            timeout=30,
+        )
+        data = resp.json()
+        text = (data.get("response") or "").strip()
+        description = ""
+        tags = []
+        for line in text.splitlines():
+            line = line.strip()
+            if line.upper().startswith("DESCRIPTION:"):
+                description = line.split(":", 1)[-1].strip().strip("-").strip()
+            elif line.upper().startswith("TAGS:"):
+                tag_str = line.split(":", 1)[-1].strip()
+                tags = [t.strip() for t in tag_str.split(",") if t.strip()][:8]
+        return (description or "", tags)
+    except Exception as e:
+        logger.exception("LLM description/tags request failed: %s", e)
+        return ("", [])
+
+
+def _get_optimal_code_from_llm(topic, user_code):
+    """Ask LLM for optimal/corrected Python code for the given topic. Returns code string or None."""
+    prompt = f"""You are a Python expert. Given the topic and the user's code below, output ONLY the optimal or corrected Python code for this topic. No explanation, no markdown, no comments outside the code — only runnable Python code.
+
+Topic: {topic}
+
+User code:
+{user_code or 'N/A'}
+
+Optimal code:"""
+    try:
+        resp = requests.post(
+            "http://localhost:11434/api/generate",
+            json={"model": "mistral", "prompt": prompt, "stream": False},
+            timeout=60,
+        )
+        data = resp.json()
+        code = (data.get("response") or "").strip()
+        if not code:
+            return None
+        # Strip markdown code fence if present
+        if code.startswith("```"):
+            lines = code.split("\n")
+            if lines[0].startswith("```"):
+                lines = lines[1:]
+            if lines and lines[-1].strip() == "```":
+                lines = lines[:-1]
+            code = "\n".join(lines)
+        return code.strip() if code else None
+    except Exception as e:
+        logger.exception("LLM optimal code request failed: %s", e)
+        return None
+
+
+def save_provisional_kb_entry(category, topic, optimal_code, metrics, description=None, tags=None, analysis_id=None, complexity=None):
+    """Append a new entry to the Knowledge_base JSON for the given category.
+    Returns: (True, None) on success, (False, 'duplicate') if topic already exists, (False, None) on error."""
+    filename = category_to_kb_filename(category)
+    path = os.path.join(KB_DIR, filename)
+    topic_norm = normalize_topic(topic)
+
+    try:
+        os.makedirs(KB_DIR, exist_ok=True)
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if not isinstance(data, list):
+                data = [data]
+            for existing in data:
+                if normalize_topic(existing.get("topic", "")) == topic_norm:
+                    return (False, "duplicate")
+        else:
+            data = []
+    except Exception as e:
+        logger.exception("Failed to load KB for duplicate check: %s", e)
+        return (False, None)
+
+    entry = {
+        "category": category,
+        "topic": topic,
+        "description": description or "",
+        "optimal_code": {"reference": optimal_code or ""},
+        "metrics": dict(metrics) if metrics else {},
+        "tags": list(tags) if tags else [],
+    }
+    if complexity:
+        entry["complexity"] = complexity
+    if analysis_id:
+        entry["source_analysis_id"] = analysis_id
+    entry["created_at"] = datetime.utcnow().isoformat()
+
+    try:
+        data.append(entry)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+        return (True, None)
+    except Exception as e:
+        logger.exception("Failed to save provisional KB entry: %s", e)
+        return (False, None)
+
+
+def add_truth_table_entry_from_kb(category, topic, scores, complexity, description=""):
+    """Append a minimal truth table entry when saving to KB so Compare can use it. Returns True on success."""
+    truth_file = os.path.join(TRUTH_DIR, "truth_tables.json")
+    if not os.path.exists(truth_file):
+        logger.warning("truth_tables.json not found; skipping truth table sync.")
+        return False
+    try:
+        with open(truth_file, "r", encoding="utf-8") as f:
+            entries = json.load(f)
+        if not isinstance(entries, list):
+            entries = [entries]
+    except Exception as e:
+        logger.exception("Failed to load truth table: %s", e)
+        return False
+
+    # Build metrics dict expected by compare (scores from report or defaults)
+    metrics = {
+        "pylint_score": scores.get("pylint_score", 0),
+        "complexity_score": scores.get("complexity_score", 0),
+        "loc_score": scores.get("loc_score", 0),
+        "structural_score": scores.get("structural_score", 0),
+        "logic_score": scores.get("logic_score", 0),
+        "cyclomatic_score": scores.get("cyclomatic_score", 0),
+        "mi_score": scores.get("mi_score", 0),
+        "composite_score": scores.get("composite_score", 0),
+        "lines_of_code": scores.get("lines_of_code"),
+        "cyclomatic_complexity": scores.get("cyclomatic_complexity"),
+    }
+    metrics = {k: v for k, v in metrics.items() if v is not None}
+
+    new_entry = {
+        "category": category,
+        "topic": topic,
+        "variant": "reference",
+        "description": description or f"From KB: {topic}",
+        "metrics": metrics,
+        "complexity": complexity or {},
+        "truth_table": [],
+    }
+    entries.append(new_entry)
+    try:
+        with open(truth_file, "w", encoding="utf-8") as f:
+            json.dump(entries, f, indent=2)
+        return True
+    except Exception as e:
+        logger.exception("Failed to append truth table entry: %s", e)
+        return False
+
+
+@app.route("/provisional/confirm", methods=["POST"])
+def provisional_confirm():
+    """Confirm and save unknown code to KB, or discard."""
+    action = request.form.get("action")
+    if action == "discard":
+        flash("Provisional entry discarded.", "info")
+        return redirect(url_for("home"))
+
+    analysis_id = request.form.get("analysis_id")
+    if not analysis_id:
+        flash("Missing analysis ID.", "warning")
+        return redirect(url_for("home"))
+
+    report = load_analysis_from_disk(analysis_id)
+    if not report:
+        flash("Analysis report not found.", "warning")
+        return redirect(url_for("home"))
+
+    meta = report.get("meta", {})
+    user_code = meta.get("user_code", "")
+    category = (request.form.get("category") or meta.get("category") or "Miscellaneous").strip()
+    topic = (request.form.get("topic") or meta.get("topic") or "Unknown").strip()
+    description = (request.form.get("description") or "").strip()
+    tags_str = (request.form.get("tags") or "").strip()
+    tags = [t.strip() for t in tags_str.split(",") if t.strip()] if tags_str else []
+
+    if not topic or topic == "Unknown":
+        flash("Please provide a topic name.", "warning")
+        return redirect(url_for("home"))
+
+    # Get optimal code from LLM (fallback: user code)
+    optimal_code = _get_optimal_code_from_llm(topic, user_code)
+    if not optimal_code:
+        optimal_code = user_code
+
+    scores = report.get("scores", {})
+    # KB entries use only cyclomatic_complexity and lines_of_code under metrics (like other KB programs)
+    metrics = {}
+    if scores.get("lines_of_code") is not None:
+        metrics["lines_of_code"] = scores["lines_of_code"]
+    if scores.get("cyclomatic_complexity") is not None:
+        metrics["cyclomatic_complexity"] = scores["cyclomatic_complexity"]
+
+    # Parse time/space complexity from report for KB complexity section
+    complexity = {}
+    raw_llm = (report.get("raw_outputs") or {}).get("complexity_llm") or ""
+    time_m = re.search(r"time_complexity:\s*[\"']?([^\"',\n]+)", raw_llm, re.IGNORECASE)
+    space_m = re.search(r"space_complexity:\s*[\"']?([^\"',\n]+)", raw_llm, re.IGNORECASE)
+    if time_m:
+        complexity["time"] = time_m.group(1).strip().strip('"').strip()
+    if space_m:
+        complexity["space"] = space_m.group(1).strip().strip('"').strip()
+
+    ok, reason = save_provisional_kb_entry(
+        category=category,
+        topic=topic,
+        optimal_code=optimal_code,
+        metrics=metrics,
+        description=description,
+        tags=tags,
+        analysis_id=analysis_id,
+        complexity=complexity if complexity else None,
+    )
+    if reason == "duplicate":
+        flash(f"Topic \"{topic}\" already exists in this category. No duplicate entry added.", "warning")
+        return redirect(url_for("home"))
+    if not ok:
+        flash("Failed to save to Knowledge Base.", "warning")
+        return redirect(url_for("home"))
+
+    # Optionally add a truth table entry so Compare works for this topic
+    scores = report.get("scores", {})
+    add_truth_table_entry_from_kb(
+        category=category,
+        topic=topic,
+        scores=scores,
+        complexity=complexity if complexity else None,
+        description=description or "",
+    )
+
+    flash(f"Saved to Knowledge Base: {topic} (category: {category}).", "success")
+    return redirect(url_for("kb_index"))
 
 
 # displaying the contents of KB
@@ -936,9 +1516,8 @@ def compare_page():
                                analysis="No recent analysis available to compare.",
                                valid_code=False)
 
-    # Only support Basic Python for now
-    # Load the truth table file
-    truth_file = os.path.join(TRUTH_DIR, "basic_python_truth_table.json")
+    # Load combined truth table (all categories)
+    truth_file = os.path.join(TRUTH_DIR, "truth_tables.json")
     if not os.path.exists(truth_file):
         return render_template("index.html",
                                analysis="Truth table file not found.",
@@ -947,24 +1526,30 @@ def compare_page():
     with open(truth_file, "r", encoding="utf-8") as f:
         truth_entries = json.load(f)
 
-    # find entries for this topic (case-insensitive)
-    candidates = [e for e in truth_entries if e.get("topic","").strip().lower() == topic.strip().lower()]
+    # find entries for this topic (normalized: strip, lower, collapse spaces)
+    topic_norm = normalize_topic(topic)
+    candidates = [e for e in truth_entries if normalize_topic(e.get("topic", "")) == topic_norm]
 
     if not candidates:
         # try fuzzy match via slug
-        def slugify(text):
-            text = text.lower()
-            text = re.sub(r"[^\w\s-]", "", text)
-            text = re.sub(r"[\s_]+", "-", text)
-            return text.strip("-")
         topic_slug = slugify(topic)
-        candidates = [e for e in truth_entries if slugify(e.get("topic","")) == topic_slug]
+        candidates = [e for e in truth_entries if slugify(e.get("topic", "")) == topic_slug]
 
     if not candidates:
-        flash(f"No truth-table entry found for topic '{topic}'.", "warning")
+        # Fallback: use KB entry for this category/topic so Compare works when topic is in KB
+        category_slug = category_to_kb_filename(category).replace(".json", "")
+        entries = load_category_entries(category_slug)
+        if entries:
+            topic_slug = slugify(topic)
+            kb_entry = find_entry_by_topic(entries, topic_slug)
+            if kb_entry:
+                candidates = [kb_entry]
+
+    if not candidates:
+        flash(f"No truth-table or KB entry found for topic '{topic}'.", "warning")
         return redirect(url_for("home"))
 
-    # choose the candidate with the highest composite_score as the 'optimal'
+    # choose the candidate with the highest composite_score as the 'optimal' (truth table) or use single KB entry
     def safe_comp(e):
         try:
             return float(e.get("metrics", {}).get("composite_score", 0))
@@ -975,24 +1560,37 @@ def compare_page():
 
     # Prepare side-by-side metric dicts
     optimal_metrics = optimal.get("metrics", {})
-    # normalize keys to the ones we store in user_scores
-    # ensure floats
     def norm(val):
         try:
             return float(val)
-        except:
-            return val
+        except (TypeError, ValueError):
+            return 0
 
-    optimal_scores = {
-        "pylint_score": norm(optimal_metrics.get("pylint_score", 0)),
-        "complexity_score": norm(optimal_metrics.get("complexity_score", 0)),
-        "loc_score": norm(optimal_metrics.get("loc_score", 0)),
-        "structural_score": norm(optimal_metrics.get("structural_score", 0)),
-        "logic_score": norm(optimal_metrics.get("logic_score", 0)),
-        "cyclomatic_score": norm(optimal_metrics.get("cyclomatic_score", optimal_metrics.get("cyclomatic_complexity", 0))),
-        "mi_score": norm((optimal_metrics.get("mi_score") or optimal_metrics.get("maintainability_index", 0))/10),
-        "composite_score": norm(optimal_metrics.get("composite_score", 0))
-    }
+    # Truth-table entries have full scores; KB entries may only have cyclomatic_complexity and lines_of_code
+    if optimal_metrics.get("composite_score") is not None or optimal_metrics.get("pylint_score") is not None:
+        optimal_scores = {
+            "pylint_score": norm(optimal_metrics.get("pylint_score", 0)),
+            "complexity_score": norm(optimal_metrics.get("complexity_score", 0)),
+            "loc_score": norm(optimal_metrics.get("loc_score", 0)),
+            "structural_score": norm(optimal_metrics.get("structural_score", 0)),
+            "logic_score": norm(optimal_metrics.get("logic_score", 0)),
+            "cyclomatic_score": norm(optimal_metrics.get("cyclomatic_score", optimal_metrics.get("cyclomatic_complexity", 0))),
+            "mi_score": norm((optimal_metrics.get("mi_score") or optimal_metrics.get("maintainability_index", 0) or 0) / 10),
+            "composite_score": norm(optimal_metrics.get("composite_score", 0))
+        }
+    else:
+        cc_raw = optimal_metrics.get("cyclomatic_complexity")
+        mi_raw = optimal_metrics.get("maintainability_index")
+        optimal_scores = {
+            "pylint_score": 0,
+            "complexity_score": 0,
+            "loc_score": 0,
+            "structural_score": 0,
+            "logic_score": 0,
+            "cyclomatic_score": _cc_to_score(cc_raw) if cc_raw is not None else 0,
+            "mi_score": (norm(mi_raw) / 10) if mi_raw is not None else 0,
+            "composite_score": 0
+        }
 
     # compute differences
     differences = {}
@@ -1052,9 +1650,28 @@ def report_pages(analysis_id):
     with open(report_path, "r", encoding="utf-8") as f:
         report = json.load(f)
 
+    # Fetch optimal code from KB for this report's category/topic
+    meta = report.get("meta", {})
+    category = meta.get("category", "")
+    topic = meta.get("topic", "")
+    optimal_code_text = None
+    if category and topic:
+        category_slug = category_to_kb_filename(category).replace(".json", "")
+        entries = load_category_entries(category_slug)
+        if entries:
+            topic_slug = slugify(topic)
+            kb_entry = find_entry_by_topic(entries, topic_slug)
+            if kb_entry:
+                opt = kb_entry.get("optimal_code") or {}
+                if isinstance(opt, dict):
+                    optimal_code_text = opt.get("reference") or opt.get("recursive") or opt.get("iterative") or (next(iter(opt.values())) if opt else None)
+                elif isinstance(opt, str):
+                    optimal_code_text = opt
+
     return render_template(
         "report.html",
-        report=report
+        report=report,
+        optimal_code=optimal_code_text
     )
 
 
@@ -1124,6 +1741,32 @@ def download_report_pdf(analysis_id):
         image_bytes = base64.b64decode(image_data)
         img = Image(BytesIO(image_bytes), width=400, height=250)
         elements.append(img)
+
+    # Optimal Python code from KB
+    elements.append(Spacer(1, 16))
+    elements.append(Paragraph("<b>Optimal Python Code from Knowledge Base</b>", styles["Heading2"]))
+    elements.append(Spacer(1, 8))
+    category = meta.get("category", "")
+    topic = meta.get("topic", "")
+    optimal_code_text = None
+    if category and topic:
+        category_slug = category_to_kb_filename(category).replace(".json", "")
+        entries = load_category_entries(category_slug)
+        if entries:
+            topic_slug = slugify(topic)
+            kb_entry = find_entry_by_topic(entries, topic_slug)
+            if kb_entry:
+                opt = kb_entry.get("optimal_code") or {}
+                if isinstance(opt, dict):
+                    # Prefer "reference", then first available variant
+                    optimal_code_text = opt.get("reference") or opt.get("recursive") or opt.get("iterative") or (next(iter(opt.values())) if opt else None)
+                elif isinstance(opt, str):
+                    optimal_code_text = opt
+    if optimal_code_text:
+        code_style = getSampleStyleSheet().get("Code") or getSampleStyleSheet()["Normal"]
+        elements.append(Preformatted(optimal_code_text, code_style))
+    else:
+        elements.append(Paragraph("No optimal code available in the Knowledge Base for this topic.", styles["Normal"]))
 
     doc.build(elements)
     buffer.seek(0)
