@@ -1536,6 +1536,32 @@ def compare_page():
         candidates = [e for e in truth_entries if slugify(e.get("topic", "")) == topic_slug]
 
     if not candidates:
+        # Enhanced fuzzy matching: check if user topic is contained in truth table topic or vice versa
+        topic_lower = topic.lower().strip()
+        for e in truth_entries:
+            truth_topic = e.get("topic", "").lower().strip()
+            # Check if either topic contains the other (e.g., "LCM" in "GCD / LCM using recursion")
+            if topic_lower in truth_topic or truth_topic in topic_lower:
+                candidates.append(e)
+        
+        # If still no match, try word-level matching (any significant word overlap)
+        if not candidates:
+            topic_words = set(topic_lower.split())
+            # Remove common words
+            topic_words = {w for w in topic_words if len(w) > 2 and w not in ['the', 'and', 'using', 'with']}
+            
+            for e in truth_entries:
+                truth_topic = e.get("topic", "").lower().strip()
+                truth_words = set(truth_topic.split())
+                truth_words = {w for w in truth_words if len(w) > 2 and w not in ['the', 'and', 'using', 'with']}
+                
+                # If at least 50% of words match, consider it a candidate
+                if topic_words and truth_words:
+                    overlap = len(topic_words & truth_words)
+                    if overlap / len(topic_words) >= 0.5 or overlap / len(truth_words) >= 0.5:
+                        candidates.append(e)
+
+    if not candidates:
         # Fallback: use KB entry for this category/topic so Compare works when topic is in KB
         category_slug = category_to_kb_filename(category).replace(".json", "")
         entries = load_category_entries(category_slug)
@@ -1778,6 +1804,176 @@ def download_report_pdf(analysis_id):
         mimetype="application/pdf"
     )
 
+
+
+
+# ========================================
+# KB EDIT MODE ROUTES
+# ========================================
+
+@app.route("/kb/delete_entry", methods=["POST"])
+def delete_kb_entry():
+    """Delete an entry from the KB"""
+    category_slug = request.form.get("category_slug")
+    topic_slug = request.form.get("topic_slug")
+    
+    if not category_slug or not topic_slug:
+        flash("Missing category or topic information.", "error")
+        return redirect(url_for("kb_index"))
+    
+    entries = load_category_entries(category_slug)
+    if entries is None:
+        flash("Category not found.", "error")
+        return redirect(url_for("kb_index"))
+    
+    # Find and remove the entry
+    entry_to_delete = None
+    for i, entry in enumerate(entries):
+        if slugify(entry.get("topic", "")) == topic_slug:
+            entry_to_delete = entries.pop(i)
+            break
+    
+    if entry_to_delete is None:
+        flash("Topic not found.", "error")
+        return redirect(url_for("kb_category", category_slug=category_slug))
+    
+    # Save updated entries back to file
+    filename = f"{category_slug}.json"
+    path = os.path.join(KB_DIR, filename)
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(entries, f, indent=2, ensure_ascii=False)
+        flash(f"Successfully deleted '{entry_to_delete.get('topic', 'Unknown')}'.", "success")
+    except Exception as e:
+        flash(f"Error saving changes: {str(e)}", "error")
+    
+    return redirect(url_for("kb_category", category_slug=category_slug))
+
+
+@app.route("/kb/move_entry", methods=["POST"])
+def move_kb_entry():
+    """Move an entry from one category to another"""
+    source_category = request.form.get("source_category")
+    target_category = request.form.get("target_category")
+    topic_slug = request.form.get("topic_slug")
+    
+    if not source_category or not target_category or not topic_slug:
+        flash("Missing required information.", "error")
+        return redirect(url_for("kb_index"))
+    
+    if source_category == target_category:
+        flash("Source and target categories are the same.", "warning")
+        return redirect(url_for("kb_category", category_slug=source_category))
+    
+    # Load source entries
+    source_entries = load_category_entries(source_category)
+    if source_entries is None:
+        flash("Source category not found.", "error")
+        return redirect(url_for("kb_index"))
+    
+    # Find and remove entry from source
+    entry_to_move = None
+    for i, entry in enumerate(source_entries):
+        if slugify(entry.get("topic", "")) == topic_slug:
+            entry_to_move = source_entries.pop(i)
+            break
+    
+    if entry_to_move is None:
+        flash("Topic not found in source category.", "error")
+        return redirect(url_for("kb_category", category_slug=source_category))
+    
+    # Load target entries
+    target_entries = load_category_entries(target_category)
+    if target_entries is None:
+        flash("Target category not found.", "error")
+        return redirect(url_for("kb_index"))
+    
+    # Update category in entry and add to target
+    entry_to_move["category"] = pretty_category_name(f"{target_category}.json")
+    target_entries.append(entry_to_move)
+    
+    # Save both files
+    try:
+        source_path = os.path.join(KB_DIR, f"{source_category}.json")
+        with open(source_path, "w", encoding="utf-8") as f:
+            json.dump(source_entries, f, indent=2, ensure_ascii=False)
+        
+        target_path = os.path.join(KB_DIR, f"{target_category}.json")
+        with open(target_path, "w", encoding="utf-8") as f:
+            json.dump(target_entries, f, indent=2, ensure_ascii=False)
+        
+        flash(f"Successfully moved '{entry_to_move.get('topic', 'Unknown')}' to {pretty_category_name(f'{target_category}.json')}.", "success")
+    except Exception as e:
+        flash(f"Error saving changes: {str(e)}", "error")
+    
+    return redirect(url_for("kb_category", category_slug=target_category))
+
+
+@app.route("/kb/add_entry", methods=["GET", "POST"])
+def add_kb_entry():
+    """Add a new entry to the KB"""
+    if request.method == "GET":
+        categories = [{"slug": os.path.splitext(f)[0], "pretty": pretty_category_name(f)} 
+                     for f in list_category_files()]
+        return render_template("kb_add_entry.html", categories=categories)
+    
+    # POST - process form
+    category_slug = request.form.get("category")
+    topic = request.form.get("topic", "").strip()
+    description = request.form.get("description", "").strip()
+    tags_str = request.form.get("tags", "").strip()
+    code = request.form.get("code", "").strip()
+    time_complexity = request.form.get("time_complexity", "").strip()
+    space_complexity = request.form.get("space_complexity", "").strip()
+    
+    if not category_slug or not topic:
+        flash("Category and topic are required.", "error")
+        return redirect(url_for("add_kb_entry"))
+    
+    # Parse tags
+    tags = [t.strip() for t in tags_str.split(",") if t.strip()]
+    
+    # Load existing entries
+    entries = load_category_entries(category_slug)
+    if entries is None:
+        flash("Category not found.", "error")
+        return redirect(url_for("kb_index"))
+    
+    # Check if topic already exists
+    for entry in entries:
+        if slugify(entry.get("topic", "")) == slugify(topic):
+            flash(f"Topic '{topic}' already exists in this category.", "error")
+            return redirect(url_for("add_kb_entry"))
+    
+    # Create new entry
+    new_entry = {
+        "category": pretty_category_name(f"{category_slug}.json"),
+        "topic": topic,
+        "description": description,
+        "tags": tags,
+        "optimal_code": {"manual": code} if code else {},
+        "complexity": {
+            "time": time_complexity if time_complexity else "—",
+            "space": space_complexity if space_complexity else "—"
+        },
+        "metrics": {
+            "cyclomatic_complexity": "—",
+            "lines_of_code": len(code.split("\n")) if code else 0
+        }
+    }
+    
+    entries.append(new_entry)
+    
+    # Save to file
+    try:
+        path = os.path.join(KB_DIR, f"{category_slug}.json")
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(entries, f, indent=2, ensure_ascii=False)
+        flash(f"Successfully added '{topic}' to {pretty_category_name(f'{category_slug}.json')}.", "success")
+        return redirect(url_for("kb_detail", category_slug=category_slug, topic_slug=slugify(topic)))
+    except Exception as e:
+        flash(f"Error saving entry: {str(e)}", "error")
+        return redirect(url_for("add_kb_entry"))
 
 
 # Optional: root redirect to /kb

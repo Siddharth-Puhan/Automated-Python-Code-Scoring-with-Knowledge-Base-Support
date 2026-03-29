@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Add KB Entry</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+  <style>
+    body { background:#121212; color:#ffffff; min-height:100vh; }
+    .card { background:#1a1a1a; border-radius:10px; }
+    .box { background:#1a1a1a; }
+    .title { color:#00d1b2; }
+    textarea { font-family: monospace; background-color: #1e1e1e; color: #ffffff; border: 1px solid #333; }
+    input, select { background-color: #1e1e1e; color: #ffffff; border: 1px solid #333; }
+    .label { color: #ffffff; }
+  </style>
+</head>
+<body>
+<section class="section">
+  <div class="container">
+    <div class="mb-4">
+      <a href="{{ url_for('kb_index') }}" class="button is-text">&larr; Back to KB</a>
+    </div>
+    <h1 class="title has-text-centered">Add New KB Entry</h1>
+
+    <div class="box">
+      <form method="post" action="{{ url_for('add_kb_entry') }}">
+        <div class="field">
+          <label class="label">Category *</label>
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select name="category" required>
+                <option value="">Select a category...</option>
+                {% for cat in categories %}
+                  <option value="{{ cat.slug }}">{{ cat.pretty }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Topic *</label>
+          <div class="control">
+            <input class="input" type="text" name="topic" placeholder="e.g., Binary Search" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Description</label>
+          <div class="control">
+            <textarea class="textarea" name="description" rows="3" placeholder="Brief description of the topic..."></textarea>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Tags (comma-separated)</label>
+          <div class="control">
+            <input class="input" type="text" name="tags" placeholder="e.g., search, algorithm, divide-and-conquer">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Code</label>
+          <div class="control">
+            <textarea class="textarea" name="code" rows="10" placeholder="def example():\n    pass" style="font-family: monospace;"></textarea>
+          </div>
+        </div>
+
+        <div class="columns">
+          <div class="column">
+            <div class="field">
+              <label class="label">Time Complexity</label>
+              <div class="control">
+                <input class="input" type="text" name="time_complexity" placeholder="e.g., O(log n)">
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label">Space Complexity</label>
+              <div class="control">
+                <input class="input" type="text" name="space_complexity" placeholder="e.g., O(1)">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field has-text-centered mt-5">
+          <button class="button is-success is-medium" type="submit">Add Entry</button>
+          <a href="{{ url_for('kb_index') }}" class="button is-light is-medium">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+</body>
+</html>

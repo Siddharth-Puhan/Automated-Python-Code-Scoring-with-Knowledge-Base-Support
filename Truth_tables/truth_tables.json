@@ -177,7 +177,7 @@
   },
   {
     "category": "Basic Python",
-    "topic": "Palindrome",
+    "topic": "Recursive Palindrome",
     "variant": "recursive",
     "description": "truth table entry for Palindrome (recursive)",
     "metrics": {
@@ -217,7 +217,7 @@
   },
   {
     "category": "Basic Python",
-    "topic": "Palindrome",
+    "topic": "Iterative Palindrome",
     "variant": "iterative",
     "description": "truth table entry for Palindrome (iterative)",
     "metrics": {
@@ -257,7 +257,7 @@
   },
   {
     "category": "Basic Python",
-    "topic": "Reverse String",
+    "topic": "Reverse String Recursive",
     "variant": "recursive",
     "description": "truth table entry for Reverse String (recursive)",
     "metrics": {
@@ -298,7 +298,7 @@
   },
   {
     "category": "Basic Python",
-    "topic": "Reverse String",
+    "topic": "Reverse String Iterative",
     "variant": "iterative",
     "description": "truth table entry for Reverse String (iterative)",
     "metrics": {
@@ -339,7 +339,7 @@
   },
   {
     "category": "Basic Python",
-    "topic": "Prime Number",
+    "topic": "Prime Number (Recursive)",
     "variant": "recursive",
     "description": "truth table entry for Prime Number (recursive)",
     "metrics": {
@@ -358,8 +358,8 @@
       "composite_score": 8.04
     },
     "complexity": {
-      "time": "O(\u221an)",
-      "space": "O(\u221an)"
+      "time": "O(√n)",
+      "space": "O(√n)"
     },
     "truth_table": [
       {
@@ -378,7 +378,7 @@
   },
   {
     "category": "Basic Python",
-    "topic": "Prime Number",
+    "topic": "Prime Number (Iterative)",
     "variant": "iterative",
     "description": "truth table entry for Prime Number (iterative)",
     "metrics": {
@@ -397,7 +397,7 @@
       "composite_score": 8.81
     },
     "complexity": {
-      "time": "O(\u221an)",
+      "time": "O(√n)",
       "space": "O(1)"
     },
     "truth_table": [
@@ -417,7 +417,7 @@
   },
   {
     "category": "Basic Python",
-    "topic": "Armstrong Number",
+    "topic": "Armstrong Number (Recursive)",
     "variant": "recursive",
     "description": "truth table entry for Armstrong Number (recursive)",
     "metrics": {
@@ -458,7 +458,7 @@
   },
   {
     "category": "Basic Python",
-    "topic": "Armstrong Number",
+    "topic": "Armstrong Number (Iterative)",
     "variant": "iterative",
     "description": "truth table entry for Armstrong Number (iterative)",
     "metrics": {
@@ -593,7 +593,7 @@
   },
   {
     "category": "Basic Python",
-    "topic": "Swap two numbers without a temp variable",
+    "topic": "Swap Two Numbers (Arithmetic)",
     "variant": "arithmetic",
     "description": "Auto-generated truth table entry for Swap two numbers without a temp variable (arithmetic)",
     "metrics": {
@@ -640,7 +640,7 @@
   },
   {
     "category": "Basic Python",
-    "topic": "Swap two numbers without a temp variable",
+    "topic": "Swap Two Numbers (Bitwise)",
     "variant": "bitwise",
     "description": "Auto-generated truth table entry for Swap two numbers without a temp variable (bitwise)",
     "metrics": {
@@ -828,7 +828,7 @@
   },
   {
     "category": "Graph",
-    "topic": "Detect cycle",
+    "topic": "Detect cycle (DFS-based)",
     "variant": "dfs",
     "description": "Truth table entry for cycle detection in graph",
     "metrics": {
@@ -894,7 +894,7 @@
   },
   {
     "category": "Graph",
-    "topic": "Shortest path (Basic Dijkstra)",
+    "topic": "Shortest path (basic Dijkstra)",
     "variant": "priority_queue",
     "description": "Truth table entry for Dijkstra shortest path",
     "metrics": {
@@ -1122,7 +1122,7 @@
   },
   {
     "category": "Linked List",
-    "topic": "Find Middle Node",
+    "topic": "Find Middle Node (Floyd's Cycle Detection)",
     "variant": "two_pointer",
     "description": "Truth table entry for middle element",
     "metrics": {
@@ -1417,7 +1417,7 @@
       "composite_score": 8.32
     },
     "complexity": {
-      "time": "O(\u221an)",
+      "time": "O(√n)",
       "space": "O(1)"
     },
     "truth_table": [
@@ -1775,6 +1775,29 @@
       "mi_score": 8.54,
       "composite_score": 7.73,
       "lines_of_code": 9,
+      "cyclomatic_complexity": 4.0
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "truth_table": []
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Vowel and Consonant Counting",
+    "variant": "reference",
+    "description": "Function to count vowels and consonants within a given string",
+    "metrics": {
+      "pylint_score": 9.23,
+      "complexity_score": 8.0,
+      "loc_score": 10.0,
+      "structural_score": 5.0,
+      "logic_score": 8.0,
+      "cyclomatic_score": 9.0,
+      "mi_score": 8.46,
+      "composite_score": 8.26,
+      "lines_of_code": 15,
       "cyclomatic_complexity": 4.0
     },
     "complexity": {

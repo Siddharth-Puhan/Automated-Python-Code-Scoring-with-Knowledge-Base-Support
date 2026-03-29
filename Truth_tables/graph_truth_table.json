@@ -57,7 +57,10 @@
     },
     "truth_table": [
       {
-        "input": ["A", "B"],
+        "input": [
+          "A",
+          "B"
+        ],
         "expected": "Edge A-B added",
         "notes": "undirected edge"
       }
@@ -90,7 +93,12 @@
     "truth_table": [
       {
         "input": "start=A",
-        "expected": ["A", "B", "D", "C"],
+        "expected": [
+          "A",
+          "B",
+          "D",
+          "C"
+        ],
         "notes": "DFS order may vary"
       }
     ]
@@ -122,7 +130,12 @@
     "truth_table": [
       {
         "input": "start=A",
-        "expected": ["A", "B", "C", "D"],
+        "expected": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
         "notes": "level-order traversal"
       }
     ]

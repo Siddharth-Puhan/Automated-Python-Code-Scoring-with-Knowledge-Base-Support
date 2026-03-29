@@ -1,148 +1,174 @@
 [
   {
-  "category": "Basic Python",
-  "topic": "Recursive Factorial",
-  "description": "Computes the factorial of a number using recursion.",
-  "optimal_code": {
-    "recursive": "def factorial_recursive(n):\n    if n == 0 or n == 1:\n        return 1\n    return n * factorial_recursive(n - 1)"
+    "category": "Basic Python",
+    "topic": "Recursive Factorial",
+    "description": "Computes the factorial of a number using recursion.",
+    "optimal_code": {
+      "recursive": "def factorial_recursive(n):\n    if n == 0 or n == 1:\n        return 1\n    return n * factorial_recursive(n - 1)"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 2,
+      "lines_of_code": 5
+    },
+    "tags": [
+      "recursion",
+      "factorial",
+      "math"
+    ]
   },
-  "complexity": {
-    "time": "O(n)",
-    "space": "O(n)"
-  },
-  "metrics": {
-    "cyclomatic_complexity": 2,
-    "lines_of_code": 5
-  },
-  "tags": ["recursion", "factorial", "math"]
-}
-,
-{
-  "category": "Basic Python",
-  "topic": "Iterative Factorial",
-  "description": "Computes the factorial of a number using iteration.",
-  "optimal_code": {
-    "iterative": "def factorial_iterative(n):\n    result = 1\n    for i in range(2, n + 1):\n        result *= i\n    return result"
-  },
-  "complexity": {
-    "time": "O(n)",
-    "space": "O(1)"
-  },
-  "metrics": {
-    "cyclomatic_complexity": 2,
-    "lines_of_code": 5
-  },
-  "tags": ["iteration", "factorial", "math"]
-}
-,
   {
-  "category": "Basic Python",
-  "topic": "Recursive Fibonacci",
-  "description": "Generates Fibonacci numbers using recursion.",
-  "optimal_code": {
-    "recursive": "def fibonacci_recursive(n):\n    if n <= 1:\n        return n\n    return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)"
+    "category": "Basic Python",
+    "topic": "Iterative Factorial",
+    "description": "Computes the factorial of a number using iteration.",
+    "optimal_code": {
+      "iterative": "def factorial_iterative(n):\n    result = 1\n    for i in range(2, n + 1):\n        result *= i\n    return result"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 2,
+      "lines_of_code": 5
+    },
+    "tags": [
+      "iteration",
+      "factorial",
+      "math"
+    ]
   },
-  "complexity": {
-    "time": "O(2^n)",
-    "space": "O(n)"
+  {
+    "category": "Basic Python",
+    "topic": "Recursive Fibonacci",
+    "description": "Generates Fibonacci numbers using recursion.",
+    "optimal_code": {
+      "recursive": "def fibonacci_recursive(n):\n    if n <= 1:\n        return n\n    return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)"
+    },
+    "complexity": {
+      "time": "O(2^n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 3,
+      "lines_of_code": 5
+    },
+    "tags": [
+      "recursion",
+      "fibonacci",
+      "sequence",
+      "math"
+    ]
   },
-  "metrics": {
-    "cyclomatic_complexity": 3,
-    "lines_of_code": 5
+  {
+    "category": "Basic Python",
+    "topic": "Iterative Fibonacci",
+    "description": "Generates Fibonacci numbers using iteration.",
+    "optimal_code": {
+      "iterative": "def fibonacci_iterative(n):\n    a, b = 0, 1\n    for _ in range(n):\n        a, b = b, a + b\n    return a"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 3,
+      "lines_of_code": 6
+    },
+    "tags": [
+      "iteration",
+      "fibonacci",
+      "sequence",
+      "math"
+    ]
   },
-  "tags": ["recursion", "fibonacci", "sequence", "math"]
-}
-,
-{
-  "category": "Basic Python",
-  "topic": "Iterative Fibonacci",
-  "description": "Generates Fibonacci numbers using iteration.",
-  "optimal_code": {
-    "iterative": "def fibonacci_iterative(n):\n    a, b = 0, 1\n    for _ in range(n):\n        a, b = b, a + b\n    return a"
+  {
+    "category": "Basic Python",
+    "topic": "Recursive Palindrome",
+    "description": "Checks whether a string is a palindrome using recursion.",
+    "optimal_code": {
+      "recursive": "def is_palindrome_recursive(s):\n    if len(s) <= 1:\n        return True\n    if s[0] != s[-1]:\n        return False\n    return is_palindrome_recursive(s[1:-1])"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 3,
+      "lines_of_code": 6
+    },
+    "tags": [
+      "recursion",
+      "string",
+      "palindrome"
+    ]
   },
-  "complexity": {
-    "time": "O(n)",
-    "space": "O(1)"
+  {
+    "category": "Basic Python",
+    "topic": "Iterative Palindrome",
+    "description": "Checks whether a string is a palindrome using iteration.",
+    "optimal_code": {
+      "iterative": "def is_palindrome_iterative(s):\n    return s == s[::-1]"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 1,
+      "lines_of_code": 2
+    },
+    "tags": [
+      "iteration",
+      "string",
+      "palindrome"
+    ]
   },
-  "metrics": {
-    "cyclomatic_complexity": 3,
-    "lines_of_code": 6
+  {
+    "category": "Basic Python",
+    "topic": "Reverse String Recursive",
+    "description": "Reverses a string using recursion.",
+    "optimal_code": {
+      "recursive": "def reverse_recursive(s):\n    if len(s) == 0:\n        return s\n    return reverse_recursive(s[1:]) + s[0]"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 2,
+      "lines_of_code": 4
+    },
+    "tags": [
+      "recursion",
+      "string",
+      "reverse"
+    ]
   },
-  "tags": ["iteration", "fibonacci", "sequence", "math"]
-}
-,
-{
-  "category": "Basic Python",
-  "topic": "Recursive Palindrome",
-  "description": "Checks whether a string is a palindrome using recursion.",
-  "optimal_code": {
-    "recursive": "def is_palindrome_recursive(s):\n    if len(s) <= 1:\n        return True\n    if s[0] != s[-1]:\n        return False\n    return is_palindrome_recursive(s[1:-1])"
+  {
+    "category": "Basic Python",
+    "topic": "Reverse String Iterative",
+    "description": "Reverses a string using iteration.",
+    "optimal_code": {
+      "iterative": "def reverse_iterative(s):\n    rev = ''\n    for ch in s:\n        rev = ch + rev\n    return rev"
+    },
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "metrics": {
+      "cyclomatic_complexity": 3,
+      "lines_of_code": 5
+    },
+    "tags": [
+      "iteration",
+      "string",
+      "reverse"
+    ]
   },
-  "complexity": {
-    "time": "O(n)",
-    "space": "O(n)"
-  },
-  "metrics": {
-    "cyclomatic_complexity": 3,
-    "lines_of_code": 6
-  },
-  "tags": ["recursion", "string", "palindrome"]
-}
-,
-{
-  "category": "Basic Python",
-  "topic": "Iterative Palindrome",
-  "description": "Checks whether a string is a palindrome using iteration.",
-  "optimal_code": {
-    "iterative": "def is_palindrome_iterative(s):\n    return s == s[::-1]"
-  },
-  "complexity": {
-    "time": "O(n)",
-    "space": "O(1)"
-  },
-  "metrics": {
-    "cyclomatic_complexity": 1,
-    "lines_of_code": 2
-  },
-  "tags": ["iteration", "string", "palindrome"]
-}
-,
-{
-  "category": "Basic Python",
-  "topic": "Reverse String Recursive",
-  "description": "Reverses a string using recursion.",
-  "optimal_code": {
-    "recursive": "def reverse_recursive(s):\n    if len(s) == 0:\n        return s\n    return reverse_recursive(s[1:]) + s[0]"
-  },
-  "complexity": {
-    "time": "O(n)",
-    "space": "O(n)"
-  },
-  "metrics": {
-    "cyclomatic_complexity": 2,
-    "lines_of_code": 4
-  },
-  "tags": ["recursion", "string", "reverse"]
-}
-,
-{
-  "category": "Basic Python",
-  "topic": "Reverse String Iterative",
-  "description": "Reverses a string using iteration.",
-  "optimal_code": {
-    "iterative": "def reverse_iterative(s):\n    rev = ''\n    for ch in s:\n        rev = ch + rev\n    return rev"
-  },
-  "complexity": {
-    "time": "O(n)",
-    "space": "O(1)"
-  },
-  "metrics": {
-    "cyclomatic_complexity": 3,
-    "lines_of_code": 5
-  },
-  "tags": ["iteration", "string", "reverse"]
-}
-,
   {
     "category": "Basic Python",
     "topic": "Prime Number (Recursive)",
@@ -151,14 +177,19 @@
       "recursive": "def is_prime_recursive(n, i=2):\n    if n <= 2:\n        return n == 2\n    if n % i == 0:\n        return False\n    if i * i > n:\n        return True\n    return is_prime_recursive(n, i + 1)"
     },
     "complexity": {
-      "time": "O(√n)",
-      "space": "O(√n)"
+      "time": "O(\u221an)",
+      "space": "O(\u221an)"
     },
     "metrics": {
       "cyclomatic_complexity": 4,
       "lines_of_code": 8
     },
-    "tags": ["recursion", "prime", "number", "math"]
+    "tags": [
+      "recursion",
+      "prime",
+      "number",
+      "math"
+    ]
   },
   {
     "category": "Basic Python",
@@ -168,14 +199,19 @@
       "iterative": "def is_prime_iterative(n):\n    if n <= 1:\n        return False\n    for i in range(2, int(n ** 0.5) + 1):\n        if n % i == 0:\n            return False\n    return True"
     },
     "complexity": {
-      "time": "O(√n)",
+      "time": "O(\u221an)",
       "space": "O(1)"
     },
     "metrics": {
       "cyclomatic_complexity": 3,
       "lines_of_code": 7
     },
-    "tags": ["iteration", "prime", "number", "math"]
+    "tags": [
+      "iteration",
+      "prime",
+      "number",
+      "math"
+    ]
   },
   {
     "category": "Basic Python",
@@ -192,7 +228,12 @@
       "cyclomatic_complexity": 4,
       "lines_of_code": 7
     },
-    "tags": ["recursion", "armstrong", "number", "math"]
+    "tags": [
+      "recursion",
+      "armstrong",
+      "number",
+      "math"
+    ]
   },
   {
     "category": "Basic Python",
@@ -209,7 +250,12 @@
       "cyclomatic_complexity": 4,
       "lines_of_code": 8
     },
-    "tags": ["iteration", "armstrong", "number", "math"]
+    "tags": [
+      "iteration",
+      "armstrong",
+      "number",
+      "math"
+    ]
   },
   {
     "category": "Basic Python",
@@ -226,7 +272,11 @@
       "cyclomatic_complexity": 2,
       "lines_of_code": 4
     },
-    "tags": ["recursion", "gcd", "math"]
+    "tags": [
+      "recursion",
+      "gcd",
+      "math"
+    ]
   },
   {
     "category": "Basic Python",
@@ -243,11 +293,15 @@
       "cyclomatic_complexity": 2,
       "lines_of_code": 4
     },
-    "tags": ["iteration", "gcd", "math"]
+    "tags": [
+      "iteration",
+      "gcd",
+      "math"
+    ]
   },
   {
     "category": "Basic Python",
-    "topic": "LCM",
+    "topic": "GCD / LCM using recursion",
     "description": "Finds the least common multiple of two numbers using GCD.",
     "optimal_code": {
       "formula": "def lcm(a, b):\n    return abs(a * b) // gcd(a, b)"
@@ -260,7 +314,12 @@
       "cyclomatic_complexity": 1,
       "lines_of_code": 3
     },
-    "tags": ["lcm", "math"]
+    "tags": [
+      "lcm",
+      "gcd",
+      "math",
+      "recursion"
+    ]
   },
   {
     "category": "Basic Python",
@@ -277,7 +336,11 @@
       "cyclomatic_complexity": 1,
       "lines_of_code": 5
     },
-    "tags": ["swap", "arithmetic", "numbers"]
+    "tags": [
+      "swap",
+      "arithmetic",
+      "numbers"
+    ]
   },
   {
     "category": "Basic Python",
@@ -294,7 +357,34 @@
       "cyclomatic_complexity": 1,
       "lines_of_code": 5
     },
-    "tags": ["swap", "bitwise", "numbers"]
+    "tags": [
+      "swap",
+      "bitwise",
+      "numbers"
+    ]
+  },
+  {
+    "category": "Basic Python",
+    "topic": "Vowel and Consonant Counting",
+    "description": "Function to count vowels and consonants within a given string",
+    "optimal_code": {
+      "reference": "Here's an optimized version of your code that makes use of the built-in Python function `str.count()` to count vowels and consonants in a string more efficiently:\n\n```python\ndef count_vowels_consonants(text):\n    \"\"\"Count vowels and consonants in a string\"\"\"\n    vowels = \"aeiouAEIOU\"\n    text = text.lower()\n\n    return len([char for char in text if char.isalpha() and (char in vowels)]), \\\n           len([char for char in text if char.isalpha() and not char.isin(vowels)])\n\n# Test\ntext = \"Hello World\"\nv, c = count_vowels_consonants(text)\nprint(f\"Vowels: {v}, Consonants: {c}\")\n```\n\nThis optimized version counts vowels and consonants in a single line using list comprehension, reducing the number of loops and making the code more concise. The output will be the same as your original code: `Vowels: 3, Consonants: 7`."
+    },
+    "metrics": {
+      "lines_of_code": 15,
+      "cyclomatic_complexity": 4.0
+    },
+    "tags": [
+      "strings",
+      "loops",
+      "conditionals",
+      "alphabets"
+    ],
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    "source_analysis_id": "5188d3ca-9138-4322-8806-8007c798b150",
+    "created_at": "2026-03-22T01:57:21.075377"
   }
 ]
-

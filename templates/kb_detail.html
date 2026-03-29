@@ -19,11 +19,29 @@
     <div class="mb-2">
       <a href="/" class="button is-text">&larr; Home</a>
       <a href="{{ url_for('kb_category', category_slug=category_slug) }}" class="button is-text">&larr; Back to Topics</a>
+      <button id="editModeToggle" class="button is-warning is-pulled-right">
+        <span class="icon">✏️</span>
+        <span>Enter Edit Mode</span>
+      </button>
     </div>
     <h1 class="title mt-3">{{ entry.topic }}</h1>
+    
+    <div id="editModeControls" style="display: none;" class="box mb-4" style="background:#2a2a2a;">
+      <h3 class="subtitle has-text-warning">Edit Mode Actions</h3>
+      <div class="buttons">
+        <button class="button is-danger" onclick="confirmDelete()">
+          <span class="icon">🗑️</span>
+          <span>Delete Entry</span>
+        </button>
+        <button class="button is-info" onclick="showMoveModal()">
+          <span class="icon">📁</span>
+          <span>Move to Another Category</span>
+        </button>
+      </div>
+    </div>
     <div class="tags mb-3">
       <span class="tag is-info">Category</span>
-      <span class="tag is-light">{{ category_pretty }}</span>
+      <span class="tag is-dark">{{ category_pretty }}</span>
       {% for t in tags %}
         <span class="tag is-dark">{{ t }}</span>
       {% endfor %}
@@ -76,6 +94,43 @@
   </div>
 </section>
 
+<!-- Move Modal -->
+<div id="moveModal" class="modal">
+  <div class="modal-background" onclick="closeMoveModal()"></div>
+  <div class="modal-card">
+    <header class="modal-card-head" style="background:#1a1a1a;">
+      <p class="modal-card-title" style="color:#ffffff;">Move Entry to Another Category</p>
+      <button class="delete" aria-label="close" onclick="closeMoveModal()"></button>
+    </header>
+    <section class="modal-card-body" style="background:#1a1a1a; color:#ffffff;">
+      <form id="moveForm" method="post" action="{{ url_for('move_kb_entry') }}">
+        <input type="hidden" name="source_category" value="{{ category_slug }}">
+        <input type="hidden" name="topic_slug" value="{{ topic_slug }}">
+        <div class="field">
+          <label class="label" style="color:#ffffff;">Select Target Category</label>
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select name="target_category" required style="background:#2a2a2a; color:#ffffff;">
+                <option value="">Choose a category...</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </form>
+    </section>
+    <footer class="modal-card-foot" style="background:#1a1a1a;">
+      <button class="button is-success" onclick="document.getElementById('moveForm').submit()">Move Entry</button>
+      <button class="button" onclick="closeMoveModal()">Cancel</button>
+    </footer>
+  </div>
+</div>
+
+<!-- Delete Form (hidden) -->
+<form id="deleteForm" method="post" action="{{ url_for('delete_kb_entry') }}" style="display:none;">
+  <input type="hidden" name="category_slug" value="{{ category_slug }}">
+  <input type="hidden" name="topic_slug" value="{{ topic_slug }}">
+</form>
+
 <script>
   // simple show/hide for code variants
   document.addEventListener("DOMContentLoaded", function(){
@@ -106,7 +161,66 @@
         if (el) el.style.display = "block";
       });
     });
+
+    // Edit mode toggle
+    const editModeToggle = document.getElementById('editModeToggle');
+    const editModeControls = document.getElementById('editModeControls');
+    let editMode = false;
+
+    editModeToggle.addEventListener('click', function() {
+      editMode = !editMode;
+      if (editMode) {
+        editModeToggle.classList.remove('is-warning');
+        editModeToggle.classList.add('is-danger');
+        editModeToggle.querySelector('span:last-child').textContent = 'Exit Edit Mode';
+        editModeControls.style.display = 'block';
+      } else {
+        editModeToggle.classList.remove('is-danger');
+        editModeToggle.classList.add('is-warning');
+        editModeToggle.querySelector('span:last-child').textContent = 'Enter Edit Mode';
+        editModeControls.style.display = 'none';
+      }
+    });
+
+    // Load categories for move modal
+    fetch('/kb')
+      .then(response => response.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const categoryLinks = doc.querySelectorAll('a[href*="/kb/"]');
+        const select = document.querySelector('#moveModal select[name="target_category"]');
+        
+        categoryLinks.forEach(link => {
+          const href = link.getAttribute('href');
+          const match = href.match(/\/kb\/([^\/]+)$/);
+          if (match) {
+            const slug = match[1];
+            const name = link.textContent.trim();
+            if (slug !== '{{ category_slug }}') {
+              const option = document.createElement('option');
+              option.value = slug;
+              option.textContent = name;
+              select.appendChild(option);
+            }
+          }
+        });
+      });
   });
+
+  function confirmDelete() {
+    if (confirm('Are you sure you want to delete this entry? This action cannot be undone.')) {
+      document.getElementById('deleteForm').submit();
+    }
+  }
+
+  function showMoveModal() {
+    document.getElementById('moveModal').classList.add('is-active');
+  }
+
+  function closeMoveModal() {
+    document.getElementById('moveModal').classList.remove('is-active');
+  }
 </script>
 
 </body>

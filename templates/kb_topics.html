@@ -20,8 +20,20 @@
     <div class="mb-2">
       <a href="/" class="button is-text">&larr; Home</a>
       <a href="{{ url_for('kb_index') }}" class="button is-text">&larr; Back to Categories</a>
+      <button id="editModeToggle" class="button is-warning is-pulled-right">
+        <span class="icon">✏️</span>
+        <span>Enter Edit Mode</span>
+      </button>
     </div>
     <h1 class="title mt-3">{{ category_pretty }}</h1>
+    
+    <div id="editModeControls" style="display: none;" class="notification is-warning has-text-centered mb-4">
+      <p class="mb-3"><strong>Edit Mode Active</strong> - Click on any topic to view delete/move options</p>
+      <a href="{{ url_for('add_kb_entry') }}" class="button is-success">
+        <span class="icon">➕</span>
+        <span>Add New Entry</span>
+      </a>
+    </div>
 
     <div class="box" style="background:#1a1a1a;">
       <form method="get" action="{{ url_for('kb_category', category_slug=category_slug) }}">
@@ -53,5 +65,28 @@
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const editModeToggle = document.getElementById('editModeToggle');
+    const editModeControls = document.getElementById('editModeControls');
+    let editMode = false;
+
+    editModeToggle.addEventListener('click', function() {
+      editMode = !editMode;
+      if (editMode) {
+        editModeToggle.classList.remove('is-warning');
+        editModeToggle.classList.add('is-danger');
+        editModeToggle.querySelector('span:last-child').textContent = 'Exit Edit Mode';
+        editModeControls.style.display = 'block';
+      } else {
+        editModeToggle.classList.remove('is-danger');
+        editModeToggle.classList.add('is-warning');
+        editModeToggle.querySelector('span:last-child').textContent = 'Enter Edit Mode';
+        editModeControls.style.display = 'none';
+      }
+    });
+  });
+</script>
 </body>
 </html>

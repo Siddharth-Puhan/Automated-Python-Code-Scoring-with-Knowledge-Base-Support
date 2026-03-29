@@ -56,7 +56,10 @@
     },
     "truth_table": [
       {
-        "input": ["insert 10", "insert 20"],
+        "input": [
+          "insert 10",
+          "insert 20"
+        ],
         "expected": "10 -> 20 -> None"
       }
     ]
@@ -191,7 +194,7 @@
   },
   {
     "category": "Linked List",
-    "topic": "Find Middle Node",
+    "topic": "Find Middle Node (Floyd's Cycle Detection)",
     "variant": "two_pointer",
     "description": "Truth table entry for middle element",
     "metrics": {
@@ -246,7 +249,10 @@
     },
     "truth_table": [
       {
-        "input": ["1 -> 3 -> 5", "2 -> 4 -> 6"],
+        "input": [
+          "1 -> 3 -> 5",
+          "2 -> 4 -> 6"
+        ],
         "expected": "1 -> 2 -> 3 -> 4 -> 5 -> 6"
       }
     ]

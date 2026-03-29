@@ -14,7 +14,12 @@
       "cyclomatic_complexity": 1,
       "lines_of_code": 6
     },
-    "tags": ["linked list", "data structure", "node", "class"]
+    "tags": [
+      "linked list",
+      "data structure",
+      "node",
+      "class"
+    ]
   },
   {
     "category": "Linked List",
@@ -31,7 +36,11 @@
       "cyclomatic_complexity": 5,
       "lines_of_code": 18
     },
-    "tags": ["linked list", "insert", "data structure"]
+    "tags": [
+      "linked list",
+      "insert",
+      "data structure"
+    ]
   },
   {
     "category": "Linked List",
@@ -48,7 +57,12 @@
       "cyclomatic_complexity": 4,
       "lines_of_code": 9
     },
-    "tags": ["linked list", "delete", "node", "data structure"]
+    "tags": [
+      "linked list",
+      "delete",
+      "node",
+      "data structure"
+    ]
   },
   {
     "category": "Linked List",
@@ -65,7 +79,12 @@
       "cyclomatic_complexity": 2,
       "lines_of_code": 5
     },
-    "tags": ["linked list", "traverse", "display", "iteration"]
+    "tags": [
+      "linked list",
+      "traverse",
+      "display",
+      "iteration"
+    ]
   },
   {
     "category": "Linked List",
@@ -82,7 +101,12 @@
       "cyclomatic_complexity": 3,
       "lines_of_code": 7
     },
-    "tags": ["linked list", "reverse", "iteration", "data structure"]
+    "tags": [
+      "linked list",
+      "reverse",
+      "iteration",
+      "data structure"
+    ]
   },
   {
     "category": "Linked List",
@@ -99,11 +123,16 @@
       "cyclomatic_complexity": 4,
       "lines_of_code": 7
     },
-    "tags": ["linked list", "loop detection", "floyd", "cycle detection"]
+    "tags": [
+      "linked list",
+      "loop detection",
+      "floyd",
+      "cycle detection"
+    ]
   },
   {
     "category": "Linked List",
-    "topic": "Find Middle Node (Floyd’s Cycle Detection)",
+    "topic": "Find Middle Node (Floyd's Cycle Detection)",
     "description": "Finds the middle node of a linked list using the slow and fast pointer approach.",
     "optimal_code": {
       "two_pointer": "def find_middle(self):\n    slow = fast = self.head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n    return slow.data"
@@ -116,7 +145,12 @@
       "cyclomatic_complexity": 3,
       "lines_of_code": 6
     },
-    "tags": ["linked list", "middle element", "floyd", "two pointer"]
+    "tags": [
+      "linked list",
+      "middle element",
+      "floyd",
+      "two pointer"
+    ]
   },
   {
     "category": "Linked List",
@@ -133,6 +167,11 @@
       "cyclomatic_complexity": 4,
       "lines_of_code": 9
     },
-    "tags": ["linked list", "merge", "recursion", "sorting"]
+    "tags": [
+      "linked list",
+      "merge",
+      "recursion",
+      "sorting"
+    ]
   }
 ]
